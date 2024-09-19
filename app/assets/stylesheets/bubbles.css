@@ -356,7 +356,10 @@
   stroke-width: 1.1rem;
   transform: rotate(var(--bubble-rotate));
   transition: all 200ms ease-out;
-  z-index: -1;
+
+  .bubble:has(.bubble__link) & {
+    z-index: -1;
+  }
 }
 
 .bubble__title {
