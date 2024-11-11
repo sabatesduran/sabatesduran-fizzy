@@ -10,7 +10,9 @@ module FiltersHelper
   end
 
   def filter_button_tag(display:, value:, name:, **options)
-    tag.button id: filter_button_id(value, name), class: [ "btn txt-small btn--remove", options.delete(:class) ], data: { action: "filter-form#removeFilter form#submit" } do
+    tag.button id: filter_button_id(value, name),
+        class: [ "btn txt-small btn--remove", options.delete(:class) ],
+        data: { action: "filter-form#removeFilter form#submit", filter_form_target: "button" } do
       concat hidden_field_tag(name, value, id: nil)
       concat tag.span(display)
       concat image_tag("close.svg", aria: { hidden: true }, size: 24)
