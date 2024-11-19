@@ -14,10 +14,9 @@
   </nav>
 <% end %>
 
-<div class="buckets margin-none unpad align-start justify-center flex flex-wrap gap">
+<div class="buckets margin-block-double unpad align-start justify-center flex flex-wrap gap">
   <%= render @buckets, cached: true %>
 </div>
-<hr class="separator--horizontal full-width margin-block-double" style="--border-style: solid; --border-color: var(--color-subtle)">
-<div class="buckets margin-none unpad align-start justify-center flex flex-wrap gap">
+<div class="buckets margin-block-double unpad align-start justify-center flex flex-wrap gap">
   <%= render @filters %>
 </div>
