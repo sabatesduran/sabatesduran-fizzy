@@ -4,7 +4,7 @@ module Messageable
   TYPES = %w[ Comment EventSummary ]
 
   included do
-    has_one :message, as: :messageable, touch: true
+    has_one :message, as: :messageable, touch: true, dependent: :destroy
     has_one :bubble, through: :message
   end
 end

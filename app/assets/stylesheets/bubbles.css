@@ -330,6 +330,11 @@
     color: var(--splat-color);
   }
 
+  textarea::selection {
+    background-color: var(--bubble-color);
+    color: var(--color-ink-reversed);
+  }
+
   @media (hover: hover) {
     .bubble:has(.bubble__image img:not([src=""])):hover & {
       color: var(--color-ink-reversed);

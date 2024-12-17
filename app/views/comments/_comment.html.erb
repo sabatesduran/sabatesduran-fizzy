@@ -3,17 +3,5 @@
     <%= avatar_tag comment.creator, loading: :lazy %>
   </figure>
 
-  <div class="comment__content flex-inline flex-column full-width border border-radius">
-    <div class="comment__author flex align-center gap-half">
-      <strong><%= comment.creator.name %></strong>
-      <%= link_to bucket_bubble_path(comment.bubble.bucket, comment.bubble, anchor: "comment_#{comment.id}"), class: "txt-undecorated" do %>
-        <%= tag.time comment.created_at, class: "comment__timestamp" do %>
-          <%= comment.created_at.strftime("%b %d") %>
-        <% end %>
-      <% end %>
-    </div>
-    <div class="comment__body txt-align-start">
-      <%= sanitize comment.body_html %>
-    </div>
-  </div>
+  <%= turbo_frame_tag dom_id(comment), src: bucket_bubble_comment_path(comment.bubble.bucket, comment.bubble, comment) %>
 <% end %>

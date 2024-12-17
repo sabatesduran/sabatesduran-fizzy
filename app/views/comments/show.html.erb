@@ -1,0 +1,22 @@
+<%= turbo_frame_tag dom_id(@comment) do %>
+  <div class="comment__content flex-inline flex-column full-width border border-radius">
+    <div class="comment__author flex align-center gap-half">
+      <strong><%= @comment.creator.name %></strong>
+      <%= link_to bucket_bubble_path(@comment.bubble.bucket, @comment.bubble, anchor: "comment_#{@comment.id}"), class: "txt-undecorated" do %>
+        <%= tag.time @comment.created_at, class: "comment__timestamp" do %>
+          <%= @comment.created_at.strftime("%b %d") %>
+        <% end %>
+      <% end %>
+
+      <% if @comment.creator == Current.user %>
+        <%= link_to edit_bucket_bubble_comment_path(@comment.bubble.bucket, @comment.bubble, @comment), class: "btn txt-small btn--plain", style: "font-size: 0.4em; opacity: 0.5;" do %>
+          <%= image_tag "menu-dots-horizontal.svg", class: "icon" %>
+          <span class="for-screen-reader">Edit</span>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="comment__body txt-align-start">
+      <%= simple_format @comment.body %>
+    </div>
+  </div>
+<% end %>

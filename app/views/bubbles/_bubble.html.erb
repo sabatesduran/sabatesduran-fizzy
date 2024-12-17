@@ -6,12 +6,16 @@
 
     <div>
       <h1 class="bubble__title">
-        <%= turbo_frame_tag bubble, :edit do %>
-          <%= link_to bubble.title, edit_bucket_bubble_path(bubble.bucket, bubble), class: "txt-undecorated" %>
+        <% if local_assigns[:editing] %>
+          <%= turbo_frame_tag bubble, :edit, src: edit_bucket_bubble_path(bubble.bucket, bubble) %>
+        <% else %>
+          <%= turbo_frame_tag bubble, :edit do %>
+            <%= link_to bubble.title, edit_bucket_bubble_path(bubble.bucket, bubble), class: "txt-undecorated" %>
 
-          <div class="bubble__tags flex flex-wrap align-end justify-center gap-half txt-tight-lines">
-            <%= render "bubbles/tags", bubble: bubble %>
-          </div>
+            <div class="bubble__tags flex flex-wrap align-end justify-center gap-half txt-tight-lines">
+              <%= render "bubbles/tags", bubble: bubble %>
+            </div>
+          <% end %>
         <% end %>
       </h1>
     </div>

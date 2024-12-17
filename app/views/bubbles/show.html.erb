@@ -61,7 +61,7 @@
 
 <div class="bubble__container">
   <div class="bubble__perma flex justify-center center margin-block-end-double">
-    <%= render "bubbles/bubble", bubble: @bubble %>
+    <%= render "bubbles/bubble", bubble: @bubble, editing: params[:editing] %>
   </div>
 
   <%= render "bubbles/messages", bubble: @bubble %>
