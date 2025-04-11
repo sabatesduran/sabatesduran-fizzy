@@ -1,5 +1,5 @@
 <%= messages_tag(card) do %>
-  <%= render partial: "messages/message", collection: card.messages, cached: true %>
+  <%= render partial: "cards/messages/message", collection: card.messages, cached: true %>
   <%= render "cards/comments/new", card: card, cached: true %>
 
   <div class="comments__subscribers flex flex-column margin-block txt-align-start full-width">
