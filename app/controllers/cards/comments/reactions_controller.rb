@@ -10,7 +10,7 @@ class Cards::Comments::ReactionsController < ApplicationController
   end
 
   def create
-    reaction = @comment.reactions.create!(reaction_params)
+    reaction = @comment.reactions.create!(params.expect(reaction: :content))
 
     broadcast_create(reaction)
     redirect_to card_comment_reactions_path(@card, @comment)
@@ -26,10 +26,6 @@ class Cards::Comments::ReactionsController < ApplicationController
   private
     def set_comment
       @comment = @card.comments.find(params[:comment_id])
-    end
-
-    def reaction_params
-      params.expect(reaction: :content)
     end
 
     def broadcast_create(reaction)
