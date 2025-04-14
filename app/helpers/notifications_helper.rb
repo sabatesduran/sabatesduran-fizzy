@@ -5,7 +5,7 @@ module NotificationsHelper
     elsif notification_event_action(notification) == "assigned"
       "Assigned to you: " + notification.card.title
     else
-      title
+      notification.card.title
     end
   end
 
