@@ -6,7 +6,7 @@
   <%= render "cards/index/header", filter: @filter %>
 <% end %>
 
-<div class="cards--columns">
+<div class="card-columns">
   <%= render "cards/index/engagement/considering", **@considering.to_h %>
   <%= render "cards/index/engagement/doing", **@doing.to_h %>
 </div>

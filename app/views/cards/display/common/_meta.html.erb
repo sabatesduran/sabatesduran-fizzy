@@ -1,25 +1,14 @@
-<div class="card__meta flex align-center txt-tight-lines txt-uppercase max-width min-width" id="<%= dom_id(card, :meta) %>">
+<div class="card__meta" id="<%= dom_id(card, :meta) %>">
   <%= avatar_image_tag card.creator, class: "avatar margin-inline-end" %>
 
-  <div class="flex flex-column gap txt-align-start">
-    <span class="pad-inline overflow-ellipsis">Added
-      <%= local_datetime_tag(card.created_at, style: :daysago) %>
+  <div class="card__meta-grid">
+    <span class="card__meta-item card__meta-item--added overflow-ellipsis">
+      Added <%= local_datetime_tag(card.created_at, style: :daysago) %>
       <% if card.drafted? %>
         <strong>(Draft)</strong>
       <% end %>
     </span>
-
-    <hr class="full-width separator--horizontal unpad margin-none">
-
-    <span class="pad-inline overflow-ellipsis">
-      Reported by <strong><%= familiar_name_for(card.creator) %></strong>  
-    </span>
-  </div>
-
-  <hr class="separator margin-none unpad">
-  
-  <div class="flex flex-column gap txt-align-start overflow-ellipsis">
-    <span class="pad-inline overflow-ellipsis">
+    <span class="card__meta-item card__meta-item--updated overflow-ellipsis">
       <% if card.creating? %>
         &nbsp;
       <% else %>
@@ -27,10 +16,10 @@
         <%= local_datetime_tag(card.updated_at, style: :daysago) %>
       <% end %>
     </span>
-
-    <hr class="full-width separator--horizontal unpad margin-none">
-
-    <span class="pad-inline overflow-ellipsis">
+    <span class="card__meta-item card__meta-item--reported overflow-ellipsis">
+      Reported by <strong><%= familiar_name_for(card.creator) %></strong>
+    </span>
+    <span class="card__meta-item card__meta-item--assigned overflow-ellipsis">
       Assigned to <%= card.assignees.any? ? card.assignees.map { |assignee| "<strong>#{familiar_name_for(assignee)}</strong>" }.to_sentence.html_safe : "no one" %>
     </span>
   </div>
@@ -39,3 +28,4 @@
     <%= yield %>
   </div>
 </div>
+

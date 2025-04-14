@@ -1,8 +1,8 @@
-<section id="doing-cards"  class="cards gap position-relative" style="align-items: center; view-transition-name: cards-container;" data-controller="card-size" data-action="turbo:morph@window->card-size#resize">
+<section id="doing-cards" class="cards cards--doing" style="view-transition-name: cards-container;" data-controller="card-size" data-action="turbo:morph@window->card-size#resize">
   <% if workflow = filter.single_workflow %>
     <%= render "cards/index/workflow_filter", workflow: workflow, filter: filter %>
   <% else %>
-    <h2 class="txt-align-center flex-inline center txt-uppercase txt-medium margin-none-block-start margin-block-end">
+    <h2 class="cards__heading">
       Doing
     </h2>
   <% end %>

@@ -1,47 +1,12 @@
 @layer components {
-  .pin__collection {
-    background-color: var(--card-color);
-    font-weight: 800;
-    letter-spacing: 0.3ch;
-    padding: 0.3em 0.6em 0.3em 1.5em;
-  }
-
-  .pin__content {
-    --border-color: transparent;
-    --border-radius: 0.2em;
-    --padding: 0.75em;
-
-    padding: var(--padding);
-
-    @media (prefers-color-scheme: dark) {
-      --border-color: var(--color-subtle-dark);
-    }
-  }
-
-  .pin__header {
-    margin: calc(var(--padding) * -1) calc(var(--padding) * -1) auto;
-    padding: 0 0.2em 0 0;
-  }
-
-  .pin__stage {
-    --border-color: currentColor;
-
-    padding: 0.2em 0.5em;
-  }
-
-  .pin__tags {
-    color: var(--card-color);
-  }
-
-  .pin__title {
-    margin-block-start: 0.3rem;
-  }
-
   .pin-tray {
     inset: auto auto var(--block-space-half) var(--inline-space);
 
     .pin {
       --z: calc(10 - var(--position));
+
+      container-type: inline-size;
+      font-size: 10px;
 
       &:nth-child(7) { --position: 7; }
       &:nth-child(8) { --position: 8; }
@@ -49,6 +14,67 @@
       &:nth-child(10) { --position: 10; }
 
       &:nth-child(1n + 11) { display: none; }
+    }
+
+    .avatar,
+    .card__tags,
+    .card__meta .btn,
+    .card__meta-item:not(.card__meta-item--updated),
+    .workflow-stage:not(.workflow-stage--current),
+    .card__closed {
+      display: none;
+    }
+
+    .card {
+      --block-space: 1em;
+      --block-space-half: 0.5em;
+      --text-xx-large: 2em;
+
+      border: 1px solid var(--color-bg);
+    }
+
+    .card__collection {
+      padding-block: 0.25ch;
+    }
+
+    .card__body {
+      display: block;
+      padding-block-end: 0;
+    }
+
+    .card__title {
+      font-size: var(--text-small);
+      font-weight: bold;
+      min-block-size: 0;
+    }
+
+    .card__title-link {
+      --lines: 1;
+    }
+
+    .card__stages {
+      padding: 0;
+    }
+
+    .card__meta-item--updated {
+      border: 0;
+      font-size: var(--text-x-small);
+      opacity: 0.66;
+      padding: 0;
+      text-transform: none;
+
+      .local-time-value {
+        font-weight: normal;
+      }
+    }
+
+    .workflow-stage--current {
+      background: none;
+      border: 1px solid currentColor;
+      color: var(--color-ink);
+      inline-size: fit-content;
+      inset: 0 0 auto auto;
+      position: absolute;
     }
   }
 }

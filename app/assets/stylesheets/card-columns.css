@@ -1,0 +1,142 @@
+@layer components {
+  /* Coluns
+  /* -------------------------------------------------------------------------- */
+
+  /* Card contents are resized via container queries. We're using #main here as
+     the primary container so all cards have the same container reference */
+  #main:has(.card-columns) {
+    container-type: inline-size;
+    max-inline-size: 1400px;
+  }
+
+  .card-columns {
+    border-block-start: 1px solid var(--color-subtle);
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    margin: auto;
+    max-inline-size: 1080px;
+
+    .cards:first-child {
+      border-inline-end: var(--border);
+      padding-inline-end: var(--cards-gap);
+    }
+
+    .cards:last-child {
+      padding-inline-start: var(--cards-gap);
+    }
+  }
+
+  /* Cards
+  /* -------------------------------------------------------------------------- */
+
+  .cards {
+    --cards-gap: 2cqi;
+
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--cards-gap);
+    justify-content: start;
+    padding-block: var(--cards-gap);
+
+    .card {
+      --block-space: 1em;
+      --block-space-half: 0.5em;
+      --text-xx-large: 2em;
+
+      /* Set lower limit for font size */
+      font-size: clamp(0.45rem, 0.85cqi, 100px);
+    }
+
+    .card__title {
+      pointer-events: none;
+    }
+
+    .card__link {
+      z-index: 1;
+    }
+
+    .card__hide-on-index {
+      display: none;
+    }
+  }
+
+  .cards__heading {
+    display: inline-flex;
+    font-size: var(--text-medium);
+    inline-size: 100%;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+
+  /* Considering
+  /* ------------------------------------------------------------------------ */
+
+  .cards--considering {
+    .card {
+      --text-xx-large: 1.6em;
+      --text-small: 1.1em;
+
+      background-color: var(--color-bg);
+      box-shadow: 0 0 0 1px var(--color-subtle);
+      line-height: 1.2;
+
+      @media (prefers-color-scheme: dark) {
+        box-shadow: 0 0 0 1px var(--color-subtle-dark);
+      }
+
+      .avatar {
+        block-size: 2.75em;
+        inline-size: 2.75em;
+      }
+    }
+
+    .card--drafted {
+      --card-color: var(--color-subtle-dark) !important;
+
+      border-color: var(--card-color) !important;
+      border-style: dashed !important;
+    }
+
+    .card__background {
+      display: none;
+    }
+
+    .card__title {
+      margin-block-start: 0.1em;
+      min-block-size: 0;
+    }
+
+    .card__people-label {
+      display: none;
+    }
+
+    .card__body {
+      padding-inline: 0;
+    }
+
+    .card__tags {
+      font-size: var(--text-small);
+    }
+  }
+
+  /* Closed
+  /* -------------------------------------------------------------------------- */
+
+  .cards--closed {
+    border-block-start: 1px solid var(--color-subtle);
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    inline-size: 100%;
+    margin: 0 auto;
+
+    .card {
+      inline-size: calc((100% - var(--cards-gap) * 2) / 3);
+
+      @media (max-width: 960px) {
+        inline-size: calc((100% - var(--cards-gap)) / 2);
+      }
+    }
+  }
+}

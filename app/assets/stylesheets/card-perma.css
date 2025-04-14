@@ -1,0 +1,153 @@
+/* Card container for the perma. Tools and actions and whatnot */
+
+@layer components {
+  .card-perma {
+    --actions-block-inset: 1.5rem;
+    --actions-inline-inset: 4rem;
+    --color-container: color-mix(in srgb, var(--card-color) 33%, var(--color-bg));
+    --padding-inline: calc(var(--block-space-double) + var(--block-space));
+    --padding-block: var(--block-space-double) calc(var(--block-space-double) + var(--block-space-half));
+
+    align-items: start;
+    column-gap: var(--inline-space);
+    display: grid;
+    grid-template-areas:
+      "qw notch-top we"
+      "actions-left card actions-right"
+      "er notch-bottom rt";
+    grid-template-columns: 48px minmax(0, 960px) 48px;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    margin-inline: auto;
+
+    &:has(.card-perma__star-input:checked) {
+      .card {
+        outline: 4px solid var(--color-negative);
+      }
+    }
+
+    .card {
+      --card-aspect-ratio: 2 / 0.95;
+
+      border: none;
+    }
+  }
+
+  /* Children
+  /* ------------------------------------------------------------------------ */
+
+  .card-perma__bg {
+    background-color: var(--color-container);
+    border-radius: 0.2em;
+    grid-area: card;
+    padding: var(--padding-block) var(--padding-inline);
+  }
+
+  .card-perma__actions {
+    display: grid;
+    gap: var(--block-space-half);
+
+    &:has([open]) {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  .card-perma__actions--left { grid-area: actions-left; }
+  .card-perma__actions--right { grid-area: actions-right; }
+
+  /* Notches
+  /* -------------------------------------------------------------------------- */
+
+  .card-perma__notch {
+    --card-notch-padding: 0.5ch;
+    --border-radius: 1em;
+
+    align-items: center;
+    background-color: var(--color-bg);
+    border-radius: 99rem;
+    color: color-mix(in srgb, var(--card-color) 40%, var(--color-ink));
+    display: inline-flex;
+    inline-size: auto;
+    gap: var(--inline-space);
+    justify-content: center;
+    margin-inline: auto;
+    position: relative;
+    text-align: center;
+    z-index: 0;
+  }
+
+  .card-perma__notch--top {
+    grid-area: notch-top;
+    inset-inline-start: 50%;
+    min-inline-size: 36ch;
+    position: absolute;
+    translate: -50% -50%;
+
+    .btn {
+      --btn-border-color: var(--card-color);
+      --btn-color: var(--card-color);
+
+      text-align: center;
+
+      &:has(input:checked)  {
+        --btn-background: var(--card-color);
+        --btn-color: var(--color-ink-reversed);
+      }
+    }
+  }
+
+  .card-perma__notch--bottom {
+    grid-area: notch-bottom;
+    padding: calc(var(--block-space) * 0.75) calc(var(--block-space) * 0.66);
+    translate: 0 -50%;
+
+    &:has([open]) {
+      z-index: 1;
+    }
+
+    .btn:not(.popup__item, .btn--plain) {
+      --btn-background: var(--card-color);
+      --btn-color: var(--color-ink-reversed);
+    }
+
+    .btn--plain {
+      --btn-color: var(--card-color);
+
+      text-decoration: underline;
+    }
+  }
+
+  .card-perma__closure-message {
+    color: var(--card-color);
+
+    &:first-child {
+      padding-left: 1ch;
+    }
+  }
+
+  /* Variants
+  /* ------------------------------------------------------------------------ */
+
+  .card-perma--pointing {
+    --arrow-size: 20em;
+    --aspect-ratio: 7;
+
+    position: relative;
+    margin-block-end: calc(var(--arrow-size) / var(--aspect-ratio));
+
+    &::after {
+      aspect-ratio: var(--aspect-ratio);
+      background-color: var(--color-container);
+      clip-path: polygon(50% 100%, 100% 0, 0 0);
+      inline-size: var(--arrow-size);
+      content: "";
+      display: block;
+      inset-block-start: 99%;
+      inset-inline-start: 50%;
+      position: absolute;
+      transform: translateX(-50%);
+      z-index: -1;
+    }
+  }
+}

@@ -3,6 +3,7 @@
     --avatar-border-radius: 50%;
 
     aspect-ratio: 1;
+    block-size: var(--avatar-size, 5ch);
     border-radius: var(--avatar-border-radius);
     display: grid;
     inline-size: var(--avatar-size, 5ch);

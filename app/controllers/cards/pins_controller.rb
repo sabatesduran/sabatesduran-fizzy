@@ -20,7 +20,7 @@ class Cards::PinsController < ApplicationController
 
   private
     def broadcast_my_new(pin)
-      pin.broadcast_prepend_later_to [ Current.user, :pins ], target: "pins", partial: "my/pins/pin"
+      pin.card.broadcast_prepend_later_to [ Current.user, :pins ], target: "pins", partial: "cards/display/preview"
     end
 
     def broadcast_my_removed(pin)

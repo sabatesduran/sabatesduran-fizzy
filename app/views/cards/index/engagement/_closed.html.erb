@@ -1,17 +1,15 @@
-<div class="margin-block">
-  <h2 class="txt-align-center flex-inline center txt-uppercase txt-medium margin-none">
+<section id="closed-cards" class="cards cards--closed">
+  <h2 class="cards__heading">
     Recently closed
   </h2>
 
-  <section id="closed-cards" class="cards--grid">
-    <% if page.used? %>
-      <%= render partial: "cards/display/preview", collection: page.records, as: :card, cached: true %>
+  <% if page.used? %>
+    <%= render partial: "cards/display/preview", collection: page.records, as: :card, cached: true %>
 
-      <% unless page.last? %>
-        <%= cards_next_page_link "closed-cards", page: page, filter: filter, fetch_on_visible: true %>
-      <% end %>
-    <% else %>
-      <p class="txt-medium translucent">Nothing here</p>
+    <% unless page.last? %>
+      <%= cards_next_page_link "closed-cards", page: page, filter: filter, fetch_on_visible: true %>
     <% end %>
-  </section>
-</div>
+  <% else %>
+    <p class="txt-medium translucent">Nothing here</p>
+  <% end %>
+</section>
