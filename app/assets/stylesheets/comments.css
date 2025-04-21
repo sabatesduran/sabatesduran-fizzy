@@ -68,6 +68,7 @@
     padding:
       var(--comment-padding-block)
       var(--comment-padding-inline);
+    word-wrap: break-word;
   }
 
   .comment__edit {

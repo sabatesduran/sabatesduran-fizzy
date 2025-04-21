@@ -6,8 +6,8 @@
     </header>
 
     <div class="card__body flex gap full-width flex-item-grow">
-      <h1 class="card__title">
-        <span class="card__title-link overflow-line-clamp"><%= card.title %></span>
+      <h1 class="card__title overflow-line-clamp">
+        <%= card.title %>
       </h1>
 
       <%= link_to collection_card_path(card.collection, card), class: "card__link" do %>

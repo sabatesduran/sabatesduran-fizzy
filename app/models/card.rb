@@ -1,5 +1,5 @@
 class Card < ApplicationRecord
-  include Assignable, Colored, DraftCommenting, Engageable, Eventable, Golden,
+  include Assignable, Colored, Engageable, Eventable, Golden,
     Messages, Notifiable, Pinnable, Closeable, Searchable, Staged,
     Statuses, Taggable, Watchable
 
@@ -9,6 +9,8 @@ class Card < ApplicationRecord
   has_many :notifications, dependent: :destroy
 
   has_one_attached :image, dependent: :purge_later
+
+  has_markdown :description
 
   scope :reverse_chronologically, -> { order created_at: :desc, id: :desc }
   scope :chronologically, -> { order created_at: :asc, id: :asc }

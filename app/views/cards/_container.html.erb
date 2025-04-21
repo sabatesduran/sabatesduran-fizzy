@@ -1,8 +1,9 @@
 <section id="<%= dom_id(card, :card_container) %>"
-    class="card-perma <%= "card-perma--pointing" unless card.published? %>" style="--card-color: <%= card.color %>;">
+    class="card-perma" style="--card-color: <%= card.color %>;">
   <%= render "cards/container/engagement", card: card %>
 
   <aside class="card-perma__actions card-perma__actions--left" role="toolbar">
+    <%= render "cards/container/edit", card: card if card.published? %>
     <%= render "cards/container/gild", card: card if card.doing? %>
     <%= render "cards/container/image", card: card %>
 
@@ -32,11 +33,8 @@
   </div>
 
   <% if card.published? %>
-    <aside class="card-perma__actions card-perma__actions--right" role="toolbar">
-      <%= turbo_frame_tag card, :watch, src: card_watch_path(card), data: { turbo_permanent: true } %>
-      <%= turbo_frame_tag card, :pin, src: card_pin_path(card), data: { turbo_permanent: true } %>
-    </aside>
-
-    <%= render "cards/container/closure", card: card %>
+    <%= render "cards/container/footer/published", card: card %>
+  <% elsif card.creating? %>
+    <%= render "cards/container/footer/draft", card: card %>
   <% end %>
 </section>

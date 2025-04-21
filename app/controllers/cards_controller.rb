@@ -54,7 +54,7 @@ class CardsController < ApplicationController
     end
 
     def card_params
-      params.expect(card: [ :status, :title, :color, :due_on, :image, :draft_comment, tag_ids: [] ])
+      params.expect(card: [ :status, :title, :description, :image, tag_ids: [] ])
     end
 
     def render_card_replacement

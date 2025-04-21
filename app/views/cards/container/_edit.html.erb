@@ -1,0 +1,4 @@
+<%= link_to edit_collection_card_path(card.collection, card), class: "btn", data: { turbo_frame: dom_id(card, :edit) } do %>
+  <%= icon_tag "pencil" %>
+  <span class="for-screen-reader">Edit</span>
+<% end %>

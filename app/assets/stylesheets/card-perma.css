@@ -100,7 +100,7 @@
       z-index: 1;
     }
 
-    .btn:not(.popup__item, .btn--plain) {
+    .btn:not(.popup__item, .btn--plain, .btn--reversed) {
       --btn-background: var(--card-color);
       --btn-color: var(--color-ink-reversed);
     }
@@ -110,6 +110,11 @@
 
       text-decoration: underline;
     }
+
+    .btn--reversed {
+      --btn-background: var(--color-bg);
+      --btn-color: var(--card-color);
+    }
   }
 
   .card-perma__closure-message {
@@ -117,31 +122,6 @@
 
     &:first-child {
       padding-left: 1ch;
-    }
-  }
-
-  /* Variants
-  /* ------------------------------------------------------------------------ */
-
-  .card-perma--pointing {
-    --arrow-size: 20em;
-    --aspect-ratio: 7;
-
-    position: relative;
-    margin-block-end: calc(var(--arrow-size) / var(--aspect-ratio));
-
-    &::after {
-      aspect-ratio: var(--aspect-ratio);
-      background-color: var(--color-container);
-      clip-path: polygon(50% 100%, 100% 0, 0 0);
-      inline-size: var(--arrow-size);
-      content: "";
-      display: block;
-      inset-block-start: 99%;
-      inset-inline-start: 50%;
-      position: absolute;
-      transform: translateX(-50%);
-      z-index: -1;
     }
   }
 }
