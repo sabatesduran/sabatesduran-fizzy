@@ -1,5 +1,6 @@
 class Notification < ApplicationRecord
   belongs_to :user
+  belongs_to :creator, class_name: "User"
   belongs_to :source, polymorphic: true
   belongs_to :resource, polymorphic: true
 
@@ -7,7 +8,6 @@ class Notification < ApplicationRecord
   scope :read, -> { where.not(read_at: nil) }
   scope :ordered, -> { order(read_at: :desc, created_at: :desc) }
 
-  delegate :creator, to: :source
   after_create_commit :broadcast_unread
 
   def self.read_all

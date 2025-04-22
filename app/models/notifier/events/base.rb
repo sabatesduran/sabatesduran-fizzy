@@ -1,5 +1,5 @@
 class Notifier::Events::Base < Notifier
-  delegate :card, to: :source
+  delegate :card, :creator, to: :source
 
   private
     def should_notify?

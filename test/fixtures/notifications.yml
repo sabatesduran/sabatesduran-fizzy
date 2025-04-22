@@ -3,15 +3,18 @@ logo_published_kevin:
   source: logo_published (Event)
   resource: logo (Card)
   created_at: <%= 1.week.ago %>
+  creator: david
 
 logo_assignment_kevin:
   user: kevin
   source: logo_assignment_km (Event)
   resource: logo (Card)
   created_at: <%= 1.week.ago %>
+  creator: david
 
 layout_commented_kevin:
   user: kevin
   source: layout_commented (Event)
   resource: layout_overflowing_david (Comment)
   created_at: <%= 1.week.ago %>
+  creator: david

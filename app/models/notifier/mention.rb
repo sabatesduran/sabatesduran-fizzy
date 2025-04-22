@@ -7,4 +7,8 @@ class Notifier::Mention < Notifier
     def recipients
       [ source.mentionee ]
     end
+
+    def creator
+      source.mentioner
+    end
 end

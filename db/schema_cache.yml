@@ -669,7 +669,16 @@ columns:
     default_function:
     collation:
     comment:
-  - *23
+  - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
+    auto_increment:
+    name: mentioner_id
+    cast_type: *1
+    sql_type_metadata: *2
+    'null': false
+    default:
+    default_function:
+    collation:
+    comment:
   - *8
   - *9
   messages:
@@ -752,6 +761,7 @@ columns:
     default_function:
     collation:
     comment:
+  - *23
   pins:
   - *5
   - *21
@@ -1647,10 +1657,10 @@ indexes:
   mentions:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: mentions
-    name: index_mentions_on_creator_id
+    name: index_mentions_on_mentioner_id
     unique: false
     columns:
-    - creator_id
+    - mentioner_id
     lengths: {}
     orders: {}
     opclasses: {}
@@ -1729,6 +1739,22 @@ indexes:
     comment:
     valid: true
   notifications:
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: notifications
+    name: index_notifications_on_creator_id
+    unique: false
+    columns:
+    - creator_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: notifications
     name: index_notifications_on_source
@@ -2019,4 +2045,4 @@ indexes:
     comment:
     valid: true
   workflows: []
-version: 20250422062930
+version: 20250422112857
