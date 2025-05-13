@@ -7,9 +7,8 @@ class Command::ChatQuery < Command
 
   def execute
     response = chat.ask query
-    generated_commands = replace_names_with_ids(JSON.parse(response.content)).tap do |commands|
-      Rails.logger.info "*** #{commands}"
-    end
+    Rails.logger.info "*** Commands: #{response.content}"
+    generated_commands = replace_names_with_ids(JSON.parse(response.content))
     build_chat_response_with generated_commands
   end
 
@@ -41,8 +40,10 @@ class Command::ChatQuery < Command
         - Clear filters: Syntax: /clear
         - Get insight about cards: Syntax: /insight [query]. Example: "/insight summarize performance issues".
         - Search cards based on certain keywords: Syntax: /search. It supports the following parameters:
-          * assignment_status: can be "unassigned". Only use assignment_status asking for unassigned cards.
-            Never use in other circumstances.
+          * assignment_status: can be "unassigned".
+          * terms: a list of terms to search for. Use this option to refine searches based on further keyword*based
+             queries. Use the plural terms even when it's only one term. Always send individual terms separated by spaces.
+             E.g: ["some", "term"] instead of ["some term"].
           * indexed_by: can be "newest", "oldest", "latest", "stalled", "closed"
           * engagement_status: can be "considering" or "doing". This refers to whether the team is working on something.
           * card_ids: a list of card ids
@@ -51,8 +52,6 @@ class Command::ChatQuery < Command
           * collection_ids: a list of collection names. Cards are contained in collections. Don't use unless mentioning
               specific collections.
           * tag_ids: a list of tag names.
-          * terms: a list of terms to search for. Use this option to refine searches based on further keyword*based
-             queries.
 
         ## How to translate requests into commands
 
@@ -60,12 +59,15 @@ class Command::ChatQuery < Command
           - If it is is "inside a card", assume you are in the right context.
           - If it is "viewing a list of cards":
             a) consider emitting a /search command to filter the cards.
-            b) consider emitting also a /insight command to refine context if needed. Pass the original query verbatim
+            b) consider emitting also a /insight command to refine context if needed. Don't do this when just asking for certain
+            terms, only when the request justifies it. Pass the original query verbatim
             to insight as the [query]. If the query is "why is it taking so long?", add "/insight why is it taking so long?".
 
         2. Create the sequence of commands to satisfy the user's request.
           - If the request is about answering some question about cards, add an /insight command. You can only
             add ONE /insight command in total.
+          - If it is "viewing a list of cards", before emitting the /insight command, consider emitting a /search command
+            to create the right context to extract the insight from.
           - If the request requires acting on cards, add the sequence of commands that satisfy those. You can combine
             all of them except /search and /insight, which have an special consideration.
 
@@ -82,13 +84,16 @@ class Command::ChatQuery < Command
         The rest of commands will only have a "command" key, nothing else.
 
         The output will be a single list of JSON objects. Make sure to place values in double quotes and
-        that you generate valid JSON.
+        that you generate valid JSON. Always respond with a list like [ { }, { }, ...]
 
         # Other
 
         * Avoid empty preambles like "Based on the provided cards". Be friendly, favor an active voice.
         * Be concise and direct.
         * When emitting search commands, if searching for terms, remove generic ones.
+        * The response can't contain more than one /search command.
+        * The response can't contain more than one /insight command.
+        * Only use assignment_status asking for unassigned cards. Never use in other circumstances.
         * There are similar commands to filter and act on cards (e.g: filter by assignee or assign 
           cards). Favor filtering/queries for commands like "cards assigned to someone".
       PROMPT
