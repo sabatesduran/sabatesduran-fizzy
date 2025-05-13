@@ -13,7 +13,7 @@ module DayTimelinesScoped
   private
     def normalize_collection_params
       if params[:collection_ids].blank? && !params[:clear_filter]
-        params[:collection_ids] = []
+        params[:clear_filter] = true
       end
     end
 
