@@ -10,8 +10,8 @@ class Command::Parser
   def parse(string)
     parse_command(string).tap do |command|
       command.user = user
-      command.line = string
-      command.context = context
+      command.line ||= string
+      command.context ||= context
     end
   end
 
@@ -65,7 +65,7 @@ class Command::Parser
       elsif card = single_card_from(string)
         Command::GoToCard.new(card_id: card.id)
       else
-        Command::ChatQuery.new(query: string, params: filter.as_params)
+        Command::Ai::Parser.new(context).parse(string)
       end
     end
 

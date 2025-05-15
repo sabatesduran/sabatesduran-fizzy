@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_10_034936) do
+ActiveRecord::Schema[8.1].define(version: 2025_05_15_125505) do
   create_table "accesses", force: :cascade do |t|
     t.integer "collection_id", null: false
     t.datetime "created_at", null: false
@@ -163,10 +163,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_10_034936) do
     t.datetime "created_at", null: false
     t.json "data", default: {}
     t.text "line"
+    t.integer "parent_id"
     t.string "type"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["parent_id"], name: "index_commands_on_parent_id"
     t.index ["user_id", "created_at"], name: "index_commands_on_user_id_and_created_at"
+    t.index ["user_id", "parent_id", "created_at"], name: "index_commands_on_user_id_and_parent_id_and_created_at"
     t.index ["user_id"], name: "index_commands_on_user_id"
   end
 
@@ -342,6 +345,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_10_034936) do
   add_foreign_key "closures", "cards"
   add_foreign_key "closures", "users"
   add_foreign_key "collections", "workflows"
+  add_foreign_key "commands", "commands", column: "parent_id"
   add_foreign_key "commands", "users"
   add_foreign_key "comments", "cards"
   add_foreign_key "events", "collections"

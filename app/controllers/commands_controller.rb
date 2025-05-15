@@ -1,6 +1,6 @@
 class CommandsController < ApplicationController
   def index
-    @commands = Current.user.commands.order(created_at: :desc).limit(20).reverse
+    @commands = Current.user.commands.root.order(created_at: :desc).limit(20).reverse
   end
 
   def create
@@ -15,7 +15,7 @@ class CommandsController < ApplicationController
         respond_with_needs_confirmation(command)
       end
     else
-      respond_with_error
+      respond_with_error(command)
     end
   end
 
@@ -38,10 +38,10 @@ class CommandsController < ApplicationController
 
     def respond_with_execution_result(result)
       case result
+      when Array
+        respond_with_composite_response(result)
       when Command::Result::Redirection
         redirect_to result.url
-      when Command::Result::ChatResponse
-        respond_with_chat_response(result)
       when Command::Result::InsightResponse
         respond_with_insight_response(result)
       else
@@ -49,42 +49,20 @@ class CommandsController < ApplicationController
       end
     end
 
-    def respond_with_chat_response(result)
-      command = command_from_chat_response(result)
-
-      if confirmed?(command)
-        if result.has_context_url? && params["redirected"].blank?
-          respond_with_needs_redirection redirect_to: result.context_url
-        elsif command.valid?
-          chat_response_result = command.execute
-          respond_with_execution_result chat_response_result
-        else
-          respond_with_error
-        end
-      else
-        respond_with_needs_confirmation(command.commands, redirect_to: result.context_url)
-      end
+    def respond_with_needs_confirmation(command)
+      render json: { confirmation: command.confirmation_prompt, redirect_to: command.context.url }, status: :conflict
     end
 
-    def respond_with_needs_confirmation(commands, redirect_to: nil)
-      render json: { commands: Array(commands).collect(&:title), redirect_to: redirect_to }, status: :conflict
-    end
-
-    def respond_with_needs_redirection(redirect_to:)
-      render json: { redirect_to: redirect_to }, status: :conflict
-    end
-
-    def command_from_chat_response(chat_response)
-      context = Command::Parser::Context.new(Current.user, url: chat_response.context_url || request.referrer)
-      parser = Command::Parser.new(context)
-      Command::Composite.new(chat_response.command_lines.collect { parser.parse it })
+    def respond_with_composite_response(results)
+      json = results.map(&:as_json).grep(Hash).reduce({}, :merge)
+      render json: json, status: :accepted
     end
 
     def respond_with_insight_response(chat_response)
       render json: { message: chat_response.content }, status: :accepted
     end
 
-    def respond_with_error
-      head :unprocessable_entity
+    def respond_with_error(command)
+      render json: { error: command.errors.full_messages.join(", "), context_url: command.context.url }, status: :unprocessable_entity
     end
 end

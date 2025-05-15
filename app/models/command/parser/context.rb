@@ -1,9 +1,11 @@
 class Command::Parser::Context
-  attr_reader :user
+  attr_reader :user, :url
 
   def initialize(user, url:)
     @user = user
-    extract_url_components(url)
+    @url = url
+
+    extract_url_components
   end
 
   def cards
@@ -31,7 +33,7 @@ class Command::Parser::Context
   private
     attr_reader :controller, :action, :params
 
-    def extract_url_components(url)
+    def extract_url_components
       uri = URI.parse(url || "")
       route = Rails.application.routes.recognize_path(uri.path)
       @controller = route[:controller]
