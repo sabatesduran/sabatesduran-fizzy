@@ -6,10 +6,12 @@ module Card::Searchable
 
     searchable_by :title_and_description, using: :cards_search_index, as: :title
 
-    scope :mentioning, ->(query) do
+    scope :mentioning, ->(query, by_similarity: false) do
+      method = by_similarity ? :search_similar : :search
+
       if query = sanitize_query_syntax(query)
-        cards = Card.search_similar(query).select(:id).to_sql
-        comments = Comment.search_similar(query).select(:id).to_sql
+        cards = Card.public_send(method, query).select(:id).to_sql
+        comments = Comment.public_send(method, query).select(:id).to_sql
 
         left_joins(:comments).where("cards.id in (#{cards}) or comments.id in (#{comments})").distinct
       else
