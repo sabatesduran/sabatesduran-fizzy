@@ -33,7 +33,7 @@ module FiltersHelper
 
   def any_filters?(filter)
     filter.tags.any? || filter.assignees.any? || filter.creators.any? ||
-      filter.stages.any? || filter.terms.any? ||
+      filter.stages.any? || filter.terms.any? || filter.card_ids&.any? ||
       filter.assignment_status.unassigned?
   end
 end
