@@ -1,7 +1,7 @@
 module MessagesHelper
   def messages_tag(card, &)
     turbo_frame_tag dom_id(card, :messages),
-      class: "comments gap center",
+      class: "comments",
       style: "--card-color: #{card.color}",
       role: "group", aria: { label: "Messages" },
       data: {

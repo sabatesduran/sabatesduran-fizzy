@@ -1,6 +1,6 @@
 <% cache comment do %>
   <%= turbo_frame_tag comment do %>
-    <div class="comment flex align-start full-width <%= "comment--system" if comment.creator.system? %>" data-creator-id="<%= comment.creator_id %>" data-created-by-current-user-target="creation">
+    <div class="comment <%= "comment--system" if comment.creator.system? %>" data-creator-id="<%= comment.creator_id %>" data-created-by-current-user-target="creation">
       <figure class="comment__avatar flex-item-no-shrink" aria-hidden="true">
         <%= avatar_tag comment.creator, hidden_for_screen_reader: true %>
       </figure>
