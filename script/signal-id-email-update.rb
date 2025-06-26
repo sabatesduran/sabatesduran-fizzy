@@ -3,6 +3,7 @@
 require_relative "../config/environment"
 
 CHANGES = [
+  { from: "kevin@37signals.com", to: "kevin@basecamp.com" },
   { from: "david@37signals.com", to: "david@hey.com" },
   { from: "jay@37signals.com", to: "jay@basecamp.com" },
   { from: "jeremy@37signals.com", to: "jeremy@basecamp.com" },
