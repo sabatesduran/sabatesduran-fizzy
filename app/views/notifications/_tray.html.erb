@@ -1,6 +1,6 @@
 <%= turbo_stream_from Current.user, :notifications %>
 
-<section class="tray tray--notifications" data-controller="dialog">
+<section class="tray tray--notifications" data-controller="dialog badge" data-badge-unread-class="unread" data-action="turbo:render#update">
   <dialog class="tray__dialog"
       data-dialog-modal-value="false" data-dialog-target="dialog"
       data-action="keydown.esc->dialog#close:stop click@document->dialog#closeOnClickOutside">
@@ -10,7 +10,7 @@
       <%= link_to settings_notifications_path,
             class: "btn borderless tray__notification-settings",
             title: "Notification settings",
-            data: { action: "click->dialog#close" } do %>
+            data: { action: "dialog#close" } do %>
         <%= icon_tag "settings" %>
         <span class="translucent">Settings</span>
       <% end %>
@@ -28,7 +28,7 @@
       <%= button_to read_all_notifications_path,
             class: "btn borderless tray__clear-notifications",
             title: "Mark all notifications as read",
-            data: { action: "click->dialog#close", turbo_frame: "notifications" } do %>
+            data: { action: "dialog#close badge#clear", turbo_frame: "notifications" } do %>
         <%= icon_tag "check" %>
         <span class="translucent">Clear all</span>
       <% end %>

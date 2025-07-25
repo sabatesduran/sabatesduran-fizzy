@@ -28,8 +28,8 @@ module NotificationsHelper
     tag.div id: dom_id(notification), class: "tray__item" do
       concat(
         link_to(notification,
-          class: [ "card card--notification", { "card--closed": notification.card.closed? } ],
-          data: { turbo_frame: "_top" },
+          class: [ "card card--notification", { "card--closed": notification.card.closed? }, { "unread": !notification.read? } ],
+          data: { turbo_frame: "_top", badge_target: "unread", action: "badge#update" },
           style: { "--card-color:": notification.card.color },
           &)
       )
@@ -42,7 +42,7 @@ module NotificationsHelper
           method: :delete,
           class: "card__notification-unread-indicator btn btn--circle borderless",
           title: "Mark as unread",
-          data: { action: "form#submit:stop", form_target: "submit" },
+          data: { action: "form#submit:stop badge#update:stop", form_target: "submit" },
           form: { data: { controller: "form" } } do
         concat(icon_tag("unseen"))
         concat(tag.span("Mark as unread", class: "for-screen-reader"))
@@ -51,7 +51,7 @@ module NotificationsHelper
       button_to read_notification_path(notification),
           class: "card__notification-unread-indicator btn btn--circle borderless",
           title: "Mark as read",
-          data: { action: "form#submit:stop", form_target: "submit" },
+          data: { action: "form#submit:stop badge#update:stop", form_target: "submit" },
           form: { data: { controller: "form" } } do
         concat(icon_tag("remove-med"))
         concat(tag.span("Mark as read", class: "for-screen-reader"))
