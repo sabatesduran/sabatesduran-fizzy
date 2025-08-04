@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "image", "dialog", "zoomedImage" ]
+  static targets = [ "caption", "image", "dialog", "zoomedImage" ]
 
   connect() {
     this.dialogTarget.addEventListener('transitionend', this.handleTransitionEnd.bind(this))
@@ -25,10 +25,18 @@ export default class extends Controller {
 
   reset() {
     this.zoomedImageTarget.src = ""
+    this.captionTarget.innerText = ""
     this.dispatch('closed')
   }
 
   #set(target) {
-    this.zoomedImageTarget.src = target.href
+    const imageSrc = target.href
+    const caption = target.dataset.lightboxCaptionValue
+
+    this.zoomedImageTarget.src = imageSrc
+
+    if (caption) {
+      this.captionTarget.innerText = caption
+    }
   }
 }

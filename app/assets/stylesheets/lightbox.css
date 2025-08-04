@@ -1,6 +1,7 @@
 @layer components {
   .lightbox {
     --dialog-duration: 350ms;
+    --lightbox-padding: 3vmin;
 
     background-color: transparent;
     block-size: 100dvh;
@@ -11,19 +12,13 @@
     max-height: unset;
     max-width: unset;
     overflow: hidden;
-    padding: var(--block-space-half) var(--inline-space);
+    padding: var(--lightbox-padding);
+    text-align: center;
 
     &::backdrop {
       -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px);
       background-color: oklch(var(--lch-black) / 50%);
-    }
-
-    img {
-      animation: slide-down var(--dialog-duration);
-      animation-fill-mode: forwards;
-      display: block;
-      margin: auto;
     }
 
     /* Closed state */
@@ -43,7 +38,7 @@
         opacity: 0;
       }
 
-      img {
+      .lightbox__figure {
         animation: slide-up var(--dialog-duration);
       }
     }
@@ -54,10 +49,32 @@
     position: absolute;
   }
 
+  .lightbox__figure {
+    align-self: stretch;
+    animation-fill-mode: forwards;
+    animation: slide-down var(--dialog-duration);
+    display: flex;
+    flex-direction: column;
+    gap: var(--lightbox-padding);
+    margin: 0 auto;
+    max-block-size: 100%;
+
+    img {
+      object-fit: contain;
+    }
+  }
+
+  .lightbox__caption {
+    color: var(--color-ink-inverted);
+
+    &:empty {
+      display: none;
+    }
+  }
+
   .lightbox__image {
-    grid-area: 1/1;
-    max-inline-size: calc(100dvw - (var(--inline-space) * 2));
-    max-block-size: calc(100dvh - (var(--block-space) * 2));
+    flex: 1;
+    min-block-size: 0;
   }
 
   /* Prevent body from scrolling when lightbox is open */
