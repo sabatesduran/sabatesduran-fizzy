@@ -63,6 +63,19 @@ A typical scenario is making modifications LLM prompts. You need to:
 Notice that if you pass changing data to the prompt, this mechanism won't work. E.g: if you pass data timestamps.
 You need to make sure those timestamps are always the same across executions.
 
+### Outbound Emails
+
+#### Development
+
+You can view email previews at http://fizzy.localhost:3006/rails/mailers.
+
+You can enable or disable [`letter_opener`](https://github.com/ryanb/letter_opener) to
+open sent emails automatically with:
+
+    bin/rails dev:email
+
+Under the hood, this will create or remove `tmp/email-dev.txt`.
+
 ## Environments
 
 Fizzy is deployed with Kamal. You'll need to have the 1Password CLI set up in order to access the secrets that are used when deploying. Provided you have that, it should be as simple as `bin/kamal deploy` to the correct environment.
@@ -73,7 +86,7 @@ Beta is primarily intended for testing product features.
 
 Beta tenant is:
 
-- https://fizzy.37signals.works/
+- https://fizzy-beta.37signals.com
 
 This environment uses local disk for Active Storage.
 

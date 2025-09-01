@@ -72,8 +72,17 @@ Rails.application.configure do
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
-  # Allow all hosts in development
-  config.hosts = nil
+  if Rails.root.join("tmp/email-dev.txt").exist?
+    config.action_mailer.delivery_method = :letter_opener
+    config.action_mailer.perform_deliveries = true
+  else
+    config.action_mailer.raise_delivery_errors = false
+  end
+
+  config.hosts = %w[ fizzy.localhost localhost 127.0.0.1 ]
+
+  # Host to be used in links rendered from ActionMailer
+  config.action_mailer.default_url_options = { host: config.hosts.first, port: 3006 }
 
   if Rails.root.join("tmp/solid-queue.txt").exist?
     config.active_job.queue_adapter = :solid_queue

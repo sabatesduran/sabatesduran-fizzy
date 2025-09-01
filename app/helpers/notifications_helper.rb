@@ -65,6 +65,15 @@ module NotificationsHelper
     end
   end
 
+  def bundle_email_frequency_options_for(settings)
+    options_for_select([
+      [ "Never", "never" ],
+      [ "Every few hours", "every_few_hours" ],
+      [ "Every day", "daily" ],
+      [ "Every week", "weekly" ]
+    ], settings.bundle_email_frequency)
+  end
+
   private
     def event_notification_action(event)
       if event.action.card_published? && event.eventable.assigned_to?(event.creator)

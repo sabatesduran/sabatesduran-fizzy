@@ -10,6 +10,7 @@ class Notification < ApplicationRecord
   scope :ordered, -> { order(read_at: :desc, created_at: :desc) }
 
   after_create_commit :broadcast_unread
+  after_create :bundle
 
   delegate :notifiable_target, to: :source
   delegate :card, to: :source
@@ -39,5 +40,9 @@ class Notification < ApplicationRecord
 
     def broadcast_read
       broadcast_remove_to user, :notifications
+    end
+
+    def bundle
+      user.bundle(self) if user.settings.bundling_emails?
     end
 end

@@ -51,10 +51,14 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :notifications do
+    resource :settings
+    resource :unsubscribe
+  end
+
   resources :notifications do
     scope module: :notifications do
       get "tray", to: "trays#show", on: :collection
-      get "settings", to: "settings#show", on: :collection
 
       post "readings", to: "readings#create_all", on: :collection, as: :read_all
       post "reading", to: "readings#create", on: :member, as: :read
@@ -162,15 +166,15 @@ Rails.application.routes.draw do
   end
 
   resolve "Mention" do |mention, options|
-    polymorphic_path(mention.source, options)
+    polymorphic_url(mention.source, options)
   end
 
   resolve "Notification" do |notification, options|
-    polymorphic_path(notification.notifiable_target, options)
+    polymorphic_url(notification.notifiable_target, options)
   end
 
   resolve "Event" do |event, options|
-    polymorphic_path(event.target, options)
+    polymorphic_url(event.eventable, options)
   end
 
   get "up", to: "rails/health#show", as: :rails_health_check

@@ -5,34 +5,16 @@
   <h1 class="header__title"><%= @page_title %></h1>
 <% end %>
 
-<div class="notifications__status panel fill-shade center margin-block-start margin-block-end-double" data-controller="notifications" data-notifications-subscriptions-url-value="<%= user_push_subscriptions_path(Current.user) %>" data-notifications-enabled-class="notifications--on">
-  <h2 class="notifications__on-message txt-medium">Push notifications are ON</h2>
-  <h2 class="notifications__off-message txt-medium">Push notifications are OFF</h2>
-
-  <div class="margin-block-start-half" data-notifications-target="subscribeButton" hidden>
-    <button class="btn txt-small" data-action="notifications#attemptToSubscribe">
-      <%= icon_tag "bell" %>
-      <span>Turn ON push notifications on this device</span>
-    </button>
+<section class="settings">
+  <div class="settings__panel settings__panel--users panel shadow center">
+    <h2 class="txt-medium txt-uppercase divider">Collections</h2>
+    <div class="settings__user-list flex flex-column gap-half">
+      <%= render partial: "notifications/settings/collection", collection: @collections, locals: { user: Current.user } %>
+    </div>
   </div>
 
-  <details class="margin-block-start-half" data-notifications-target="explainer">
-    <summary class="btn txt-x-small">
-      <%= icon_tag "lifebuoy" %>
-      <span class="notifications__off-message">Help me fix this</span>
-      <span class="notifications__on-message">Not receiving notifications?</span>
-    </summary>
-
-    <div class="notifications-help__explainer fill-white margin-block-start border-radius border txt-align-start">
-      <p class="margin-none-block-start notifications__on-message">When push notifications aren’t working, this can usually be fixed by checking your notification settings to make sure they’re allowed.</p>
-      <%= render partial: "notifications/settings/browser" %>
-      <%= render partial: "notifications/settings/system" %>
-      <%= render partial: "notifications/settings/install" %>
-    </div>
-  </details>
-</div>
-
-<section class="panel unpad borderless center flex flex-column gap-half">
-  <h2 class="txt-medium txt-uppercase divider">Collections</h2>
-  <%= render partial: "notifications/settings/collection", collection: @collections, locals: { user: Current.user } %>
+  <div class="settings__panel panel shadow center">
+    <%= render "notifications/settings/push_notifications" %>
+    <%= render "notifications/settings/email", settings: @settings %>
+  </div>
 </section>

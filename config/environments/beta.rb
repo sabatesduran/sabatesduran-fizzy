@@ -1,7 +1,9 @@
 require_relative "production"
 
 Rails.application.configure do
-  config.action_mailer.default_url_options = { host: "%{tenant}.37signals.works" }
+  config.action_mailer.smtp_settings[:domain] = "fizzy-beta.37signals.com"
+  config.action_mailer.smtp_settings[:address] = "smtp-outbound-staging"
+  config.action_mailer.default_url_options = { host: "fizzy-beta.37signals.com", protocol: "https" }
 
   # Let's keep beta on local disk. See https://github.com/basecamp/fizzy/pull/557 for context.
   config.active_storage.service = :local

@@ -1231,6 +1231,21 @@ columns:
   - *6
   - *35
   - *9
+  user_settings:
+  - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
+    auto_increment:
+    name: bundle_email_frequency
+    cast_type: *3
+    sql_type_metadata: *4
+    'null': false
+    default: 0
+    default_function:
+    collation:
+    comment:
+  - *5
+  - *6
+  - *9
+  - *18
   users:
   - !ruby/object:ActiveRecord::ConnectionAdapters::SQLite3::Column
     auto_increment:
@@ -1378,6 +1393,7 @@ primary_keys:
   steps: id
   taggings: id
   tags: id
+  user_settings: id
   users: id
   watches: id
   workflow_stages: id
@@ -1428,6 +1444,7 @@ data_sources:
   steps: true
   taggings: true
   tags: true
+  user_settings: true
   users: true
   watches: true
   workflow_stages: true
@@ -2841,6 +2858,40 @@ indexes:
     comment:
     valid: true
   tags: []
+  user_settings:
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: user_settings
+    name: index_user_settings_on_user_id
+    unique: false
+    columns:
+    - user_id
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
+  - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
+    table: user_settings
+    name: index_user_settings_on_user_id_and_bundle_email_frequency
+    unique: false
+    columns:
+    - user_id
+    - bundle_email_frequency
+    lengths: {}
+    orders: {}
+    opclasses: {}
+    where:
+    type:
+    using:
+    include:
+    nulls_not_distinct:
+    comment:
+    valid: true
   users:
   - !ruby/object:ActiveRecord::ConnectionAdapters::IndexDefinition
     table: users
@@ -2941,4 +2992,4 @@ indexes:
     comment:
     valid: true
   workflows: []
-version: 20250827072601
+version: 20250828092106

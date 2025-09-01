@@ -1,0 +1,9 @@
+<% event = notification.source %>
+
+<h3 class="event__title">
+  <%= link_to event_notification_title(event), notification.source %>
+</h3>
+
+<p class="event__details">
+  <%= event_notification_body(event) %>
+</p>
