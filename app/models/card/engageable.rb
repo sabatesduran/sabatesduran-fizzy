@@ -41,23 +41,13 @@ module Card::Engageable
 
   def engage
     unless doing?
-      transaction do
-        reopen
-        create_engagement!(status: "doing")
-      end
+      reengage(status: "doing")
     end
   end
 
   def move_to_on_deck
     unless on_deck?
-      transaction do
-        reopen
-        if engagement.present?
-          engagement.update!(status: "on_deck")
-        else
-          create_engagement!(status: "on_deck")
-        end
-      end
+      reengage(status: "on_deck")
     end
   end
 
@@ -69,4 +59,13 @@ module Card::Engageable
       touch_last_active_at
     end
   end
+
+  private
+    def reengage(status:)
+      transaction do
+        reopen
+        engagement&.destroy
+        create_engagement!(status:)
+      end
+    end
 end

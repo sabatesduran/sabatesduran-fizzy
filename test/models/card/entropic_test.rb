@@ -98,7 +98,7 @@ class Card::EntropicTest < ActiveSupport::TestCase
     assert_equal Time.current, cards(:logo).last_active_at
   end
 
-  test "auto_reconsider_all_stagnated" do
+  test "auto_reconsider_all_stagnated includes cards in doing and on_deck" do
     travel_to Time.current
 
     cards(:logo, :shipping).each(&:engage)
