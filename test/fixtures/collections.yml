@@ -2,7 +2,6 @@ writebook:
   name: Writebook
   creator: david
   all_access: true
-  workflow: qa
 
 private:
   name: Private collection
