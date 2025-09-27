@@ -2,8 +2,26 @@
 
 require_relative "../../config/environment"
 
+class Card
+  has_one :engagement, dependent: :destroy, class_name: "Card::Engagement"
+
+  def doing?
+    open? && published? && engagement&.status == "doing"
+  end
+
+  def on_deck?
+    open? && published? && engagement&.status == "on_deck"
+  end
+
+  def considering?
+    open? && published? && engagement.blank?
+  end
+end
+
 ApplicationRecord.with_each_tenant do |tenant|
   puts "Processing tenant: #{tenant}"
+
+  Column.destroy_all
 
   Collection.find_each do |collection|
     next unless collection.workflow.present?
@@ -23,7 +41,7 @@ ApplicationRecord.with_each_tenant do |tenant|
 
     # Associate cards with their corresponding columns based on stages
     collection.cards.includes(:stage).find_each do |card|
-      next unless card.stage.present?
+      next if !card.doing? || card.stage.present?
 
       unless card.stage.workflow.collections.include?(collection)
         puts "Corrupt data: the card with id #{card.id} has the stage #{card.stage.name} with id #{card.stage.id} that belongs to a workflow not asociated ot its collection"
