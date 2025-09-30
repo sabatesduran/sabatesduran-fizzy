@@ -73,6 +73,10 @@
       z-index: 3;
     }
 
+    &:not(.cards--considering) {
+      overflow: clip;
+    }
+
     &.is-collapsed {
       border-radius: calc(var(--column-width-collapsed) / 2);
       flex: 0 0 var(--column-width-collapsed);
@@ -252,6 +256,12 @@
     border: 2px dashed color-mix(in srgb, var(--card-color) 40%, var(--color-canvas));;
     font-weight: 600;
     rotate: 2deg;
+
+    p {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   /* TODO: I think this is legacy now? */
