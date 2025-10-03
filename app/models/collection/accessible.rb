@@ -47,6 +47,10 @@ module Collection::Accessible
     notifications_for_user(user).destroy_all
   end
 
+  def watchers
+    users.where(accesses: { involvement: :watching })
+  end
+
   private
     def grant_access_to_creator
       accesses.create(user: creator, involvement: :watching)

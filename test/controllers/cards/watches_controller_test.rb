@@ -12,7 +12,7 @@ class Cards::WatchesControllerTest < ActionDispatch::IntegrationTest
       post card_watch_path(cards(:logo))
     end
 
-    assert_redirected_to card_watch_path(cards(:logo))
+    assert_redirected_to cards(:logo)
   end
 
   test "destroy" do
@@ -22,6 +22,6 @@ class Cards::WatchesControllerTest < ActionDispatch::IntegrationTest
       delete card_watch_path(cards(:logo))
     end
 
-    assert_redirected_to card_watch_path(cards(:logo))
+    assert_redirected_to cards(:logo)
   end
 end
