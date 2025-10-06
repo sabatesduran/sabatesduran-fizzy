@@ -8,6 +8,7 @@ module SessionTestHelper
     user = users(user) unless user.is_a? User
 
     post session_path, params: { email_address: user.email_address, password: "secret123456" }
+    assert_response :redirect
 
     cookie = cookies.get_cookie "session_token"
     assert_not_nil cookie, "Expected session_token cookie to be set after sign in"
