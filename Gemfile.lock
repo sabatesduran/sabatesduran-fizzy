@@ -1,4 +1,13 @@
 GIT
+  remote: https://github.com/basecamp/activerecord-tenanted
+  revision: f412b25ff0096064a4763dc0c8d21b6593678137
+  specs:
+    activerecord-tenanted (0.5.0)
+      activerecord (>= 8.1.beta)
+      railties (>= 8.1.beta)
+      zeitwerk
+
+GIT
   remote: https://github.com/basecamp/queenbee-plugin
   revision: eb01c697de1ad028afc65cc7d9b5345a7a8e849f
   ref: eb01c697de1ad028afc65cc7d9b5345a7a8e849f
@@ -157,10 +166,6 @@ GEM
       activemodel (>= 5.0.0.a)
       activesupport (>= 5.0.0.a)
       builder (~> 3.1)
-    activerecord-tenanted (0.5.0)
-      activerecord (>= 8.1.beta)
-      railties (>= 8.1.beta)
-      zeitwerk
     activeresource (6.2.0)
       activemodel (>= 7.0)
       activemodel-serializers-xml (~> 1.0)
@@ -612,7 +617,7 @@ PLATFORMS
   x86_64-mingw32
 
 DEPENDENCIES
-  activerecord-tenanted
+  activerecord-tenanted!
   activeresource
   autotuner
   aws-sdk-s3
