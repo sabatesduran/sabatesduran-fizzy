@@ -41,7 +41,7 @@
   .reactions__list {
     display: inline-flex;
     flex-wrap: wrap;
-    gap: var(--column-gap);
+    gap: var(--inline-space-half);
   }
 
   /* Single reaction
@@ -180,10 +180,12 @@
       /* Make sure the selection ring sits on top of adjacent buttons on hover */
       &:hover,
       &:focus-visible {
-        /* box-shadow: var(--shadow); */
         filter: none;
-        scale: 1.5;
         z-index: 1;
+      }
+
+      &:hover {
+        scale: 1.5;
       }
     }
   }
