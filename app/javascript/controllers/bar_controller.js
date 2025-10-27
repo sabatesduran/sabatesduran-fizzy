@@ -2,11 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 import { post } from "@rails/request.js"
 
 export default class extends Controller {
-  static targets = [ "turboFrame", "searchInput", "askInput", "buttonsContainer" ]
+  static targets = [ "turboFrame", "searchInput", "buttonsContainer" ]
   static outlets = [ "dialog" ]
   static values = {
     searchUrl: String,
-    askUrl: String,
   }
 
   dialogOutletConnected(outlet, element) {
@@ -21,9 +20,6 @@ export default class extends Controller {
     this.searchInputTarget.querySelector("input").value = ""
     this.#showItem(this.buttonsContainerTarget)
     this.#hideItem(this.searchInputTarget)
-    if (this.hasAskInputTarget) {
-      this.#hideItem(this.askInputTarget)
-    }
   }
 
   showModalAndSubmit(event) {
@@ -44,18 +40,6 @@ export default class extends Controller {
 
     this.#showItem(this.searchInputTarget)
     this.#hideItem(this.buttonsContainerTarget)
-    if (this.hasAskInputTarget) {
-      this.#hideItem(this.askInputTarget)
-    }
-  }
-
-  ask(event) {
-    this.#initializeConversation()
-    this.#openInTurboFrame(this.askUrlValue)
-
-    this.#showItem(this.askInputTarget)
-    this.#hideItem(this.searchInputTarget)
-    this.#hideItem(this.buttonsContainerTarget)
   }
 
   #clearTurboFrame() {
@@ -65,10 +49,6 @@ export default class extends Controller {
 
   #openInTurboFrame(url) {
     this.turboFrameTarget.src = url
-  }
-
-  #initializeConversation() {
-    post(this.askUrlValue)
   }
 
   #showItem(element) {

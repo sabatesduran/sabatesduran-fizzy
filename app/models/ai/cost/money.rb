@@ -1,4 +1,4 @@
-class Ai::Quota::Money < Data.define(:value)
+class Ai::Cost::Money < Data.define(:value)
   CENTS_PER_DOLLAR = 100
   MICROCENTS_PER_CENT = 1_000_000
   MICROCENTS_PER_DOLLAR = CENTS_PER_DOLLAR * MICROCENTS_PER_CENT

@@ -1,4 +1,4 @@
-class Ai::UsageCost
+class Ai::Cost
   attr_reader :model_id, :input_tokens, :output_tokens
 
   class << self
@@ -34,7 +34,7 @@ class Ai::UsageCost
 
       single_token_price = price_per_million.to_d / 1_000_000
       token_cost_dollars = token_count * single_token_price
-      Ai::Quota::Money.wrap(token_cost_dollars).in_microcents
+      Money.wrap(token_cost_dollars).in_microcents
     end
 
     def model_info

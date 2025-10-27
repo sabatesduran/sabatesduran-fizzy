@@ -2,7 +2,7 @@ require "test_helper"
 
 class Ai::ResponseCostTest < ActiveSupport::TestCase
   test "price calculations" do
-    response_cost = Ai::UsageCost.new(
+    response_cost = Ai::Cost.new(
       model_id: "gpt-4",
       input_tokens: 198,
       output_tokens: 2

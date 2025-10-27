@@ -48,15 +48,4 @@ class UserTest < ActiveSupport::TestCase
 
     assert_not_includes User.active, system_user
   end
-
-  test "start or continue conversation" do
-    user = users(:jz)
-
-    assert_nil user.conversation
-
-    conversation = user.start_or_continue_conversation
-
-    assert user.conversation
-    assert_equal user.conversation, conversation
-  end
 end

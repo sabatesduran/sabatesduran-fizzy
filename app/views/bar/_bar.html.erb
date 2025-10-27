@@ -3,8 +3,7 @@
       data: {
         controller: "bar",
         bar_dialog_outlet: "#bar-modal",
-        bar_search_url_value: search_path,
-        bar_ask_url_value: conversation_path
+        bar_search_url_value: search_path
       } do %>
   <div class="flex justify-center bar__placeholder" data-bar-target="buttonsContainer">
     <%= tag.button \
@@ -16,28 +15,11 @@
             keydown.k@document->hotkey#click" } do %>
       <span>Search <% if platform.desktop? -%><kbd>K</kbd><% end %></span>
     <% end %>
-    <% if Current.user.staff? %>
-      <%= tag.button \
-            class: "btn btn--plain visually-hidden",
-            data: {
-              controller: "hotkey",
-              action: "
-              bar#ask
-              keydown.a@document->hotkey#click" } do %>
-        <span>Ask <% if platform.desktop? -%><kbd>A</kbd><% end %></span>
-      <% end %>
-    <% end %>
   </div>
 
   <div class="bar__input" data-bar-target="searchInput" hidden>
     <%= render "searches/form", query_terms: "" %>
   </div>
-
-  <% if Current.user.staff? %>
-    <div class="bar__input" data-bar-target="askInput" hidden>
-      <%= render "conversations/composer" %>
-    </div>
-  <% end %>
 
   <%= tag.dialog \
     id: "bar-modal",
