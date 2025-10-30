@@ -1,6 +1,6 @@
 <section id="considering-cards" class="cards cards--considering">
   <% if page.used? %>
-    <%= render partial: "cards/display/public_preview", collection: page.records, as: :card, cached: ->(card) { card_preview_cache_parts(card) } %>
+    <%= render "cards/display/public_previews", collection: page.records %>
 
     <% unless page.last? %>
       <div class="full-width">

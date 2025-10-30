@@ -1,1 +1,1 @@
-<%= render partial: "cards/display/preview", collection: column.cards, as: :card, locals: { draggable: draggable }, cached: ->(card) { card_preview_cache_parts(card) } %>
+<%= render "cards/display/previews", collection: column.cards, draggable: draggable %>
