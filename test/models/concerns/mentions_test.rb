@@ -8,7 +8,7 @@ class MentionsTest < ActiveSupport::TestCase
   test "don't create mentions when creating or updating drafts" do
     assert_no_difference -> { Mention.count } do
       perform_enqueued_jobs only: Mention::CreateJob do
-        card = boards(:writebook).cards.create title: "Cleanup", description: "Did you finish up with the cleanup, @david?"
+        card = boards(:writebook).cards.create title: "Cleanup", description: "Did you finish up with the cleanup, @davidh?"
         card.update description: "Any thoughts here @jz"
       end
     end
@@ -17,7 +17,7 @@ class MentionsTest < ActiveSupport::TestCase
   test "create mentions from plain text mentions when publishing cards" do
     perform_enqueued_jobs only: Mention::CreateJob do
       card = assert_no_difference -> { Mention.count } do
-        boards(:writebook).cards.create title: "Cleanup", description: "Did you finish up with the cleanup, @david?"
+        boards(:writebook).cards.create title: "Cleanup", description: "Did you finish up with the cleanup, @davidh?"
       end
 
       card = Card.find(card.id)
@@ -45,14 +45,14 @@ class MentionsTest < ActiveSupport::TestCase
 
   test "don't create repeated mentions when updating cards" do
     perform_enqueued_jobs only: Mention::CreateJob do
-      card = boards(:writebook).cards.create title: "Cleanup", description: "Did you finish up with the cleanup, @david?"
+      card = boards(:writebook).cards.create title: "Cleanup", description: "Did you finish up with the cleanup, @davidh?"
 
       assert_difference -> { Mention.count }, +1 do
         card.published!
       end
 
       assert_no_difference -> { Mention.count } do
-        card.update description: "Any thoughts here @david"
+        card.update description: "Any thoughts here @davidh"
       end
 
       assert_difference -> { Mention.count }, +1 do
@@ -66,7 +66,7 @@ class MentionsTest < ActiveSupport::TestCase
       card = boards(:writebook).cards.create title: "Cleanup", description: "Some initial content", status: :published
 
       assert_difference -> { Mention.count }, +1 do
-        card.comments.create!(body: "Great work on this @david!")
+        card.comments.create!(body: "Great work on this @davidh!")
       end
     end
   end
@@ -76,7 +76,7 @@ class MentionsTest < ActiveSupport::TestCase
       card = boards(:writebook).cards.create title: "Cleanup", description: "Some initial content"
 
       assert_no_difference -> { Mention.count } do
-        card.comments.create!(body: "Great work on this @david!")
+        card.comments.create!(body: "Great work on this @davidh!")
       end
     end
   end
