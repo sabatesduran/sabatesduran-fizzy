@@ -27,7 +27,7 @@ module My::MenuHelper
   def my_menu_tag_item(the_tag)
     tag.li(class: "popup__item", data: { filter_target: "item", navigable_list_target: "item", id: "filter-tag-#{the_tag.id}" }) do
       icon_tag("tag", class: "popup__icon") +
-      link_to(tag.span("#{the_tag.title} (#{the_tag.cards_count})", class: "overflow-ellipsis"), cards_path(tag_ids: [the_tag]), class: "popup__btn btn")
+      link_to(tag.span("#{the_tag.title} (#{the_tag.cards_count})", class: "overflow-ellipsis"), cards_path(tag_ids: [ the_tag ]), class: "popup__btn btn")
     end
   end
 

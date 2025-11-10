@@ -17,8 +17,8 @@ class AccountTest < ActiveSupport::TestCase
     membership = identity.memberships.create!(tenant: ActiveRecord::FixtureSet.identify("account-create-with-admin-user-test"))
     account = nil
 
-    assert_changes  -> { Account.count }, +1 do
-      assert_changes  -> { User.count }, +1 do
+    assert_changes -> { Account.count }, +1 do
+      assert_changes -> { User.count }, +1 do
         account = Account.create_with_admin_user(
           account: {
             external_account_id: ActiveRecord::FixtureSet.identify("account-create-with-admin-user-test"),
