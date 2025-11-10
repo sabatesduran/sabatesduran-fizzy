@@ -49,8 +49,7 @@ class Webhook < ApplicationRecord
   end
 
   def renderer
-    # TODO:PLANB: Current.account is not quite right, we should use the webhook's account_id
-    @renderer ||= ApplicationController.renderer.new(script_name: "/#{Current.account.external_account_id}", https: !Rails.env.local?)
+    @renderer ||= ApplicationController.renderer.new(script_name: "/#{account.external_account_id}", https: !Rails.env.local?)
   end
 
   def for_basecamp?
