@@ -1,4 +1,4 @@
-class CreateSessions < ActiveRecord::Migration[8.2]
+class CreateIdentitySessions < ActiveRecord::Migration[8.2]
   def change
     create_table "sessions", force: :cascade do |t|
       t.datetime "created_at", null: false

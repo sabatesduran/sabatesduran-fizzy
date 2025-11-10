@@ -1,11 +1,12 @@
+# TODO:PLANB: not sure what to set membership tenant to right now
 david_in_37signals:
   identity: david
-  tenant: <%= Rails.application.config.active_record_tenanted.default_tenant %>
+  tenant: 1 # <%# Rails.application.config.active_record_tenanted.default_tenant %>
 
 jz_in_37signals:
   identity: jz
-  tenant: <%= Rails.application.config.active_record_tenanted.default_tenant %>
+  tenant: 2 # <%# Rails.application.config.active_record_tenanted.default_tenant %>
 
 kevin_in_37signals:
   identity: kevin
-  tenant: <%= Rails.application.config.active_record_tenanted.default_tenant %>
+  tenant: 3 # <%# Rails.application.config.active_record_tenanted.default_tenant %>

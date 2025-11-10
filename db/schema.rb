@@ -379,6 +379,15 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "identity_id", null: false
+    t.string "ip_address"
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.index ["identity_id"], name: "index_sessions_on_identity_id"
+  end
+
   create_table "steps", force: :cascade do |t|
     t.integer "card_id", null: false
     t.boolean "completed", default: false, null: false
@@ -495,6 +504,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   add_foreign_key "pins", "users"
   add_foreign_key "push_subscriptions", "users"
   add_foreign_key "search_queries", "users"
+  add_foreign_key "sessions", "identities"
   add_foreign_key "steps", "cards"
   add_foreign_key "taggings", "cards"
   add_foreign_key "taggings", "tags"

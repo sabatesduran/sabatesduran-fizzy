@@ -15,28 +15,25 @@ def create_tenant(signal_account_name)
   identity = Identity.find_or_create_by!(email_address: email_address)
   membership = identity.memberships.find_or_create_by!(tenant: tenant_id)
 
-  ApplicationRecord.destroy_tenant tenant_id
-  ApplicationRecord.create_tenant(tenant_id) do
-    account = Account.create_with_admin_user(
-      account: {
-        external_account_id: tenant_id,
-        name: signal_account_name
-      },
-      owner: {
-        name: "David Heinemeier Hansson",
-        membership: membership
-      }
-    )
-    Current.account = account
-  end
+  account = Account.create_with_admin_user(
+    account: {
+      external_account_id: tenant_id,
+      name: signal_account_name
+    },
+    owner: {
+      name: "David Heinemeier Hansson",
+      membership: membership
+    }
+  )
+  Current.account = account
 end
 
 def find_or_create_user(full_name, email_address)
-  if user = Identity.find_by(email_address: email_address)&.memberships&.find_by(tenant: ApplicationRecord.current_tenant)&.user
+  if user = Identity.find_by(email_address: email_address)&.memberships&.find_by(tenant: Current.account.id)&.user
     user
   else
     identity = Identity.find_or_create_by!(email_address: email_address)
-    membership = identity.memberships.find_or_create_by!(tenant: ApplicationRecord.current_tenant)
+    membership = identity.memberships.find_or_create_by!(tenant: Current.account.id)
 
     user = User.create! \
       name: full_name,

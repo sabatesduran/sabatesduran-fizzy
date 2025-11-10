@@ -98,27 +98,22 @@ class Signup
     end
 
     def create_tenant
-      ApplicationRecord.create_tenant(tenant) do
-        @account = Account.create_with_admin_user(
-          account: {
-            external_account_id: tenant,
-            name: account_name
-          },
-          owner: {
-            name: full_name,
-            membership_id: membership.id
-          }
-        )
-        @user = User.find_by!(role: :admin)
-        @account.setup_customer_template
-      end
+      @account = Account.create_with_admin_user(
+        account: {
+          external_account_id: tenant,
+          name: account_name
+        },
+        owner: {
+          name: full_name,
+          membership_id: membership.id
+        }
+      )
+      @user = User.find_by!(role: :admin)
+      @account.setup_customer_template
     end
 
     def destroy_tenant
-      if tenant.present? && ApplicationRecord.tenant_exist?(tenant)
-        ApplicationRecord.destroy_tenant(tenant)
-      end
-
+      # # TODO:PLANB: need to destroy the account/user records properly
       @user = nil
       @account = nil
       @tenant = nil
