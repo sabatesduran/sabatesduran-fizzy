@@ -1,6 +1,8 @@
 class Account < ApplicationRecord
   include Entropic, Seedeable
 
+  has_one :join_code
+
   has_many_attached :uploads
 
   after_create :create_join_code
@@ -9,9 +11,9 @@ class Account < ApplicationRecord
 
   class << self
     def create_with_admin_user(account:, owner:)
-      create!(**account).tap do
-        User.system
-        User.create!(**owner.reverse_merge(role: "admin"))
+      create!(**account).tap do |account|
+        User.create!(account: account, role: :system, name: "System")
+        User.create!(**owner.reverse_merge(role: "admin", account: account))
       end
     end
   end
@@ -24,9 +26,4 @@ class Account < ApplicationRecord
   def slug
     "/#{external_account_id}"
   end
-
-  private
-    def create_join_code
-      Account::JoinCode.create!
-    end
 end

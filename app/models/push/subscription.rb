@@ -1,4 +1,5 @@
 class Push::Subscription < ApplicationRecord
+  belongs_to :account, default: -> { Current.account }
   belongs_to :user
 
   def notification(**params)

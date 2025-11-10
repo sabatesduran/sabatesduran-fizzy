@@ -1,8 +1,8 @@
 class Filter < ApplicationRecord
   include Fields, Params, Resources, Summarized
 
+  belongs_to :account, default: -> { Current.account }
   belongs_to :creator, class_name: "User", default: -> { Current.user }
-  has_one :account, through: :creator
 
   class << self
     def from_params(params)

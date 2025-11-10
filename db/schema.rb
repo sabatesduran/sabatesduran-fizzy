@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_10_175021) do
   create_table "accesses", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.bigint "board_id", null: false
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "account_join_codes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.string "code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -113,6 +114,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "boards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.boolean "all_access", default: false, null: false
     t.datetime "created_at", null: false
     t.bigint "creator_id", null: false
@@ -161,6 +163,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "cards", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.bigint "board_id", null: false
     t.bigint "column_id"
     t.datetime "created_at", null: false
@@ -193,6 +196,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "columns", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.bigint "board_id", null: false
     t.string "color", null: false
     t.datetime "created_at", null: false
@@ -204,6 +208,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.bigint "card_id", null: false
     t.datetime "created_at", null: false
     t.integer "creator_id", null: false
@@ -229,6 +234,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.string "action", null: false
     t.bigint "board_id", null: false
     t.datetime "created_at", null: false
@@ -245,6 +251,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "filters", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.bigint "creator_id", null: false
     t.json "fields", default: -> { "(json_object())" }, null: false
@@ -290,6 +297,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "mentions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.bigint "mentionee_id", null: false
     t.bigint "mentioner_id", null: false
@@ -302,6 +310,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "notification_bundles", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.datetime "ends_at", null: false
     t.datetime "starts_at", null: false
@@ -314,6 +323,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.bigint "creator_id"
     t.datetime "read_at"
@@ -338,6 +348,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "push_subscriptions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.string "auth_key"
     t.datetime "created_at", null: false
     t.string "endpoint"
@@ -353,6 +364,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "reactions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.integer "comment_id", null: false
     t.string "content", limit: 16, null: false
     t.datetime "created_at", null: false
@@ -387,6 +399,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "steps", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.bigint "card_id", null: false
     t.boolean "completed", default: false, null: false
     t.text "content", null: false
@@ -406,6 +419,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.datetime "created_at", null: false
     t.string "title"
     t.datetime "updated_at", null: false
@@ -423,6 +437,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.integer "membership_id"
@@ -466,6 +481,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_06_154151) do
   end
 
   create_table "webhooks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "account_id"
     t.boolean "active", default: true, null: false
     t.bigint "board_id", null: false
     t.datetime "created_at", null: false

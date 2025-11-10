@@ -25,6 +25,7 @@ class Webhook < ApplicationRecord
   has_many :deliveries, dependent: :delete_all
   has_one :delinquency_tracker, dependent: :delete
 
+  belongs_to :account, default: -> { Current.account }
   belongs_to :board
 
   serialize :subscribed_actions, type: Array, coder: JSON

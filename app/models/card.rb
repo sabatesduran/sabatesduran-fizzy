@@ -3,6 +3,7 @@ class Card < ApplicationRecord
     Golden, Mentions, Multistep, Pinnable, Postponable, Promptable,
     Readable, Searchable, Stallable, Statuses, Taggable, Triageable, Watchable
 
+  belongs_to :account, default: -> { Current.account }
   belongs_to :board, touch: true
   belongs_to :creator, class_name: "User", default: -> { Current.user }
 

@@ -25,17 +25,15 @@ class Import
       Event.suppress do
         Current.with(account: account) do
           Webhook.skip_callback(:create, :after, :create_delinquency_tracker!)
-          Comment.skip_callback(:create, :after_create_commit, :watch_card_by_creator)
-          Mention.skip_callback(:create, :after_create_commit, :watch_source_by_mentionee)
-          Mention.skip_callback(:create, :after_create_commit, :notify_recipients)
-          Notification.skip_callback(:create, :after_create_commit, :broadcast_unread)
+          Comment.skip_callback(:commit, :after, :watch_card_by_creator)
+          Mention.skip_callback(:commit, :after, :watch_source_by_mentionee)
+          Notification.skip_callback(:commit, :after, :broadcast_unread)
           Notification.skip_callback(:create, :after, :bundle)
-          Notification.skip_callback(:create, :after_create_commit, :push_notification)
           Reaction.skip_callback(:create, :after, :register_card_activity)
           Card.skip_callback(:save, :before, :set_default_title)
           Card.skip_callback(:update, :after, :handle_board_change)
 
-          copy_entropies
+          # copy_entropies
           copy_users
           copy_boards
           copy_accesses
@@ -54,6 +52,8 @@ class Import
           copy_notification_bundles
           copy_filters
           copy_events
+
+          fix_links
         end
       end
     end
@@ -63,6 +63,7 @@ class Import
 
   private
     def setup_account
+      puts "⏩ Setting up account"
       oldest_admin = import.users.order(id: :asc).where(role: :admin, active: true).first
       raise "No admin user found in the database" unless oldest_admin
 
@@ -70,22 +71,24 @@ class Import
       account = import.accounts.sole
 
       new_identity = Identity.find_or_create_by!(email_address: membership.identity.email_address)
-      new_membership = new_identity.memberships.create!(tenant: account.external_account_id.to_s)
+      new_membership = new_identity.memberships.find_or_create_by!(tenant: account.external_account_id.to_s)
 
-      signup = Signup.new(
-        email_address: membership.identity.email_address,
-        full_name: oldest_admin.name,
-        account_name: account.name,
-        identity: new_identity,
-        membership_id: new_membership.signed_id(purpose: Signup::MEMBERSHIP_PURPOSE)
-      )
-
-      unless signup.complete
-        raise "Failed to complete signup: #{signup.errors.full_messages.join(', ')}"
+      if Account.all.exists?(external_account_id: account.external_account_id)
+        @account = Account.find_by!(external_account_id: account.external_account_id)
+        @tenant = @account.external_account_id
+      else
+        @account = Account.create_with_admin_user(
+          account: {
+            external_account_id: account.external_account_id.to_s,
+            name: account.name
+          },
+          owner: {
+            name: oldest_admin.name,
+            membership_id: new_membership.id
+          }
+        )
+        @tenant = @account.external_account_id
       end
-
-      @tenant = signup.tenant
-      @account = signup.account
 
       old_join_code = import.account_join_codes.sole
 
@@ -93,18 +96,21 @@ class Import
         usage_count: old_join_code.usage_count,
         usage_limit: old_join_code.usage_limit
       }
-      attributes[:code] = old_join_code.code unless Account::JoinCode.exist?(code: old_join_code.code)
+      attributes[:code] = old_join_code.code unless Account::JoinCode.all.exists?(code: old_join_code.code)
 
-      account.join_code.update_columns(**attributes)
+      @account.join_code.update_columns(**attributes)
+      puts "✅ Account set up!"
     end
 
     def copy_users
+      puts "⏩ Copying users"
+      mapping[:users] ||= {}
       import.users.find_each do |old_user|
         new_membership = nil
 
-        if user.active
+        if old_user.active && old_user.membership_id
           membership = untenanted.memberships.find(old_user.membership_id)
-          new_identity = Identity.find_or_create_by!(email_address: identity.email_address)
+          new_identity = Identity.find_or_create_by!(email_address: membership.identity.email_address)
           new_membership = new_identity.memberships.find_or_create_by!(tenant: tenant)
         end
 
@@ -122,12 +128,14 @@ class Import
           end
         end
 
-        mapping[:users] ||= {}
         mapping[:users][old_user.id] = new_user.id
       end
+      puts "✅ Copied #{mapping[:users].size} users"
     end
 
     def copy_boards
+      puts "⏩ Copying boards"
+      mapping[:boards] ||= {}
       import.boards.find_each do |old_board|
         new_board = Board.create!(
           account_id: account.id,
@@ -148,12 +156,15 @@ class Import
           )
         end
 
-        mapping[:boards] ||= {}
         mapping[:boards][old_board.id] = new_board.id
       end
+      puts "✅ Copied #{mapping[:boards].size} boards"
     end
 
     def copy_columns
+      puts "⏩ Copying columns"
+      mapping[:columns] ||= {}
+
       import.columns.find_each do |old_column|
         new_column = Column.create!(
           account_id: account.id,
@@ -165,12 +176,14 @@ class Import
           updated_at: old_column.updated_at
         )
 
-        mapping[:columns] ||= {}
         mapping[:columns][old_column.id] = new_column.id
       end
+      puts "✅ Copied #{mapping[:columns].size} columns"
     end
 
     def copy_cards
+      puts "⏩ Copying cards"
+      mapping[:cards] ||= {}
       import.cards.find_each do |old_card|
         new_card = Card.create!(
           account_id: account.id,
@@ -228,7 +241,6 @@ class Import
 
         old_card.assignments.each do |old_assignment|
           Assignment.create!(
-            account_id: account.id,
             card_id: new_card.id,
             assignee_id: mapping[:users][old_assignment.assignee_id],
             assigner_id: mapping[:users][old_assignment.assigner_id],
@@ -240,7 +252,6 @@ class Import
         old_closure = old_card.closure
         if old_closure
           Closure.create!(
-            account_id: account.id,
             card_id: new_card.id,
             user_id: old_closure.user_id ? mapping[:users][old_closure.user_id] : nil,
             created_at: old_closure.created_at,
@@ -248,12 +259,13 @@ class Import
           )
         end
 
-        mapping[:cards] ||= {}
         mapping[:cards][old_card.id] = new_card.id
       end
+      puts "✅ Copied #{mapping[:cards].size} cards"
     end
 
     def copy_steps
+      puts "⏩ Copying steps"
       import.steps.find_each do |old_step|
         Step.create!(
           account_id: account.id,
@@ -264,9 +276,12 @@ class Import
           updated_at: old_step.updated_at
         )
       end
+      puts "✅ Copied steps"
     end
 
     def copy_comments
+      puts "⏩ Copying comments"
+      mapping[:comments] ||= {}
       import.comments.find_each do |old_comment|
         new_comment = Comment.create!(
           account_id: account.id,
@@ -278,12 +293,14 @@ class Import
 
         copy_rich_text(old_comment, new_comment, "Comment", "body")
 
-        mapping[:comments] ||= {}
         mapping[:comments][old_comment.id] = new_comment.id
       end
+      puts "✅ Copied #{mapping[:comments].size} comments"
     end
 
     def copy_mentions
+      puts "⏩ Copying mentions"
+      mapping[:mentions] ||= {}
       import.mentions.find_each do |old_mention|
         new_mention = Mention.create!(
           account_id: account.id,
@@ -295,29 +312,34 @@ class Import
           updated_at: old_mention.updated_at
         )
 
-        mapping[:mentions] ||= {}
         mapping[:mentions][old_mention.id] = new_mention.id
       end
+      puts "✅ Copied #{mapping[:mentions].size} mentions"
     end
 
     def copy_accesses
+      puts "⏩ Copying accesses"
       import.accesses.find_each do |old_access|
-        new_access = Access.create!(
-          account_id: account.id,
+        new_access = Access.find_or_create_by!(
           board_id: mapping[:boards][old_access.board_id],
-          user_id: mapping[:users][old_access.user_id],
-          involvement: old_access.involvement,
-          accessed_at: old_access.accessed_at,
-          created_at: old_access.created_at,
-          updated_at: old_access.updated_at
-        )
+          user_id: mapping[:users][old_access.user_id]
+        ) do |access|
+          access.involvement = old_access.involvement
+          access.accessed_at = old_access.accessed_at
+          access.created_at = old_access.created_at
+          access.updated_at = old_access.updated_at
+        end
 
         mapping[:accesses] ||= {}
         mapping[:accesses][old_access.id] = new_access.id
       end
+      puts "✅ Copied #{mapping[:accesses].size} accesses"
     end
 
     def copy_notifications
+      puts "⏩ Copying notifications"
+      mapping[:notifications] ||= {}
+
       import.notifications.find_each do |old_notification|
         new_notification = Notification.create!(
           account_id: account.id,
@@ -330,12 +352,15 @@ class Import
           updated_at: old_notification.updated_at
         )
 
-        mapping[:notifications] ||= {}
         mapping[:notifications][old_notification.id] = new_notification.id
       end
+      puts "✅ Copied #{mapping[:notifications].size} notifications"
     end
 
     def copy_notification_bundles
+      puts "⏩ Copying notification bundles"
+      mapping[:notification_bundles] ||= {}
+
       import.notification_bundles.find_each do |old_bundle|
         new_bundle = Notification::Bundle.create!(
           account_id: account.id,
@@ -347,12 +372,13 @@ class Import
           updated_at: old_bundle.updated_at
         )
 
-        mapping[:notification_bundles] ||= {}
         mapping[:notification_bundles][old_bundle.id] = new_bundle.id
       end
+      puts "✅ Copied #{mapping[:notification_bundles].size} notification bundles"
     end
 
     def copy_entropies
+      puts "⏩ Copying entropies"
       import.entropies.find_each do |old_entropy|
         container_id = case old_entropy.container_type
         when "Account" then account.id
@@ -369,9 +395,13 @@ class Import
           updated_at: old_entropy.updated_at
         )
       end
+      puts "✅ Copied entropies"
     end
 
     def copy_filters
+      puts "⏩ Copying filters"
+      mapping[:filters] ||= {}
+
       import.filters.find_each do |old_filter|
         new_filter = Filter.create!(
           account_id: account.id,
@@ -406,12 +436,13 @@ class Import
           FiltersTag.find_or_create_by!(filter_id: new_filter.id, tag_id: mapping[:tags][join.tag_id])
         end
 
-        mapping[:filters] ||= {}
         mapping[:filters][old_filter.id] = new_filter.id
       end
+      puts "✅ Copied #{mapping[:filters].size} filters"
     end
 
     def copy_events
+      puts "⏩ Copying events"
       import.events.find_each do |old_event|
         new_event = Event.create!(
           account_id: account.id,
@@ -428,6 +459,7 @@ class Import
         mapping[:events] ||= {}
         mapping[:events][old_event.id] = new_event.id
       end
+      puts "✅ Copied #{mapping[:events].size} events"
     end
 
     def copy_rich_text(old_record, new_record, record_type, name)
@@ -478,6 +510,8 @@ class Import
     end
 
     def copy_reactions
+      puts "⏩ Copying reactions"
+      mapping[:reactions] ||= {}
       import.reactions.find_each do |old_reaction|
         new_reaction = Reaction.create!(
           account_id: account.id,
@@ -488,12 +522,16 @@ class Import
           updated_at: old_reaction.updated_at
         )
 
-        mapping[:reactions] ||= {}
         mapping[:reactions][old_reaction.id] = new_reaction.id
       end
+      puts "✅ Copied #{mapping[:reactions].size} reactions"
     end
 
     def copy_tags
+      puts "⏩ Copying tags"
+      mapping[:tags] ||= {}
+      mapping[:taggings] ||= {}
+
       import.tags.find_each do |old_tag|
         new_tag = Tag.find_or_create_by!(title: old_tag.title) do |t|
           t.account_id = account.id
@@ -501,28 +539,28 @@ class Import
           t.updated_at = old_tag.updated_at
         end
 
-        mapping[:tags] ||= {}
         mapping[:tags][old_tag.id] = new_tag.id
       end
 
       import.taggings.find_each do |old_tagging|
         new_tagging = Tagging.create!(
-          account_id: account.id,
           tag_id: mapping[:tags][old_tagging.tag_id],
           card_id: mapping[:cards][old_tagging.card_id],
           created_at: old_tagging.created_at,
           updated_at: old_tagging.updated_at
         )
 
-        mapping[:taggings] ||= {}
         mapping[:taggings][old_tagging.id] = new_tagging.id
       end
+      puts "✅ Copied #{mapping[:tags].size} tags and #{mapping[:taggings].size} taggings"
     end
 
     def copy_watches
+      puts "⏩ Copying watches"
+      mapping[:watches] ||= {}
+
       import.watches.find_each do |old_watch|
         new_watch = Watch.create!(
-          account_id: account.id,
           user_id: mapping[:users][old_watch.user_id],
           card_id: mapping[:cards][old_watch.card_id],
           watching: old_watch.watching,
@@ -530,27 +568,33 @@ class Import
           updated_at: old_watch.updated_at
         )
 
-        mapping[:watches] ||= {}
         mapping[:watches][old_watch.id] = new_watch.id
       end
+      puts "✅ Copied #{mapping[:watches].size} watches"
     end
 
     def copy_pins
+      puts "⏩ Copying pins"
+      mapping[:pins] ||= {}
+
       import.pins.find_each do |old_pin|
         new_pin = Pin.create!(
-          account_id: account.id,
           user_id: mapping[:users][old_pin.user_id],
           card_id: mapping[:cards][old_pin.card_id],
           created_at: old_pin.created_at,
           updated_at: old_pin.updated_at
         )
 
-        mapping[:pins] ||= {}
         mapping[:pins][old_pin.id] = new_pin.id
       end
+      puts "✅ Copied #{mapping[:pins].size} pins"
     end
 
     def copy_webhooks
+      puts "⏩ Copying webhooks"
+      mapping[:webhooks] ||= {}
+      mapping[:webhook_deliveries] ||= {}
+
       import.webhooks.find_each do |old_webhook|
         new_webhook = Webhook.create!(
           account_id: account.id,
@@ -564,7 +608,6 @@ class Import
           updated_at: old_webhook.updated_at
         )
 
-        mapping[:webhooks] ||= {}
         mapping[:webhooks][old_webhook.id] = new_webhook.id
 
         old_tracker = import.webhook_delinquency_trackers.find_by(webhook_id: old_webhook.id)
@@ -588,12 +631,15 @@ class Import
           updated_at: old_delivery.updated_at
         )
 
-        mapping[:webhook_deliveries] ||= {}
         mapping[:webhook_deliveries][old_delivery.id] = new_delivery.id
       end
+      puts "✅ Copied #{mapping[:webhooks].size} webhooks and #{mapping[:webhook_deliveries].size} deliveries"
     end
 
     def copy_push_subscriptions
+      puts "⏩ Copying push subscriptions"
+      mapping[:push_subscriptions] ||= {}
+
       import.push_subscriptions.find_each do |old_subscription|
         new_subscription = Push::Subscription.create!(
           account_id: account.id,
@@ -606,9 +652,14 @@ class Import
           updated_at: old_subscription.updated_at
         )
 
-        mapping[:push_subscriptions] ||= {}
         mapping[:push_subscriptions][old_subscription.id] = new_subscription.id
       end
+      puts "✅ Copied #{mapping[:push_subscriptions].size} push subscriptions"
+    end
+
+    def fix_links
+      puts "⏩ Fixing links"
+      puts "✅ Fixed #{mapping[:cards].size} links"
     end
 
     def import

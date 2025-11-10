@@ -1,6 +1,7 @@
 class Tag < ApplicationRecord
   include Attachable, Filterable
 
+  belongs_to :account, default: -> { Current.account }
   has_many :taggings, dependent: :destroy
   has_many :cards, through: :taggings
 

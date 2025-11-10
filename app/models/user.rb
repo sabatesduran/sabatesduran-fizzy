@@ -5,6 +5,7 @@ class User < ApplicationRecord
 
   has_one_attached :avatar
 
+  belongs_to :account, default: -> { Current.account }
   belongs_to :membership, optional: true
 
   has_one :identity, through: :membership, disable_joins: true

@@ -1,6 +1,8 @@
 class Account::JoinCode < ApplicationRecord
   CODE_LENGTH = 12
 
+  belongs_to :account
+
   scope :active, -> { where("usage_count < usage_limit") }
 
   before_create :generate_code, if: -> { code.blank? }
