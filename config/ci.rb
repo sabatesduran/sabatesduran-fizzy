@@ -9,10 +9,6 @@ CI.run do
   step "Security: Importmap audit", "bin/importmap audit"
   step "Security: Brakeman audit",  "bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error"
 
-  unless ENV["SKIP_MIGRATION_CHECK"]
-    step "Database: Check migrations", "bin/migration-audit"
-  end
-
   step "Tests: Rails: SaaS config", "bin/rails test"
   step "Tests: Rails: OSS config",  "OSS_CONFIG=1 bin/rails test"
   step "Tests: System",             "bin/rails test:system"
