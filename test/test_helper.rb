@@ -44,6 +44,12 @@ module ActiveSupport
 
     include ActiveJob::TestHelper
     include ActionTextTestHelper, CardTestHelper, ChangeTestHelper, SessionTestHelper
+
+    setup do
+      # TODO:PLANB: this is hacky, we should sort through the `Current` dependencies and figure out
+      #             how to set Current.user without needing both a session *and* an account
+      Current.account = accounts("37s")
+    end
   end
 end
 
