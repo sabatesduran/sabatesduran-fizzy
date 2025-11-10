@@ -24,7 +24,7 @@ module Card::Promptable
       * Board id: #{board_id}
       * Board name: #{board.name}
       * Number of comments: #{comments.count}
-      * Path: #{card_path(self, script_name: Current.account.slug)}
+      * Path: #{card_path(self, script_name: account.slug)}
 
       END OF CARD #{id}
     PROMPT
