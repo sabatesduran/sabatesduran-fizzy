@@ -5,7 +5,11 @@
 				dialog_target: "dialog",
 				navigable_list_focus_on_selection_value: false,
 				navigable_list_actionable_items_value: true } do %>
-    <strong class="popup__title">Assign this to…</strong>
+
+    <div class="flex align-start justify-space-between">
+      <strong class="popup__title">Assign this to…</strong>
+      <kbd class="txt-xx-small hide-on-touch">a</kbd>
+    </div>
 
     <% if @users.many? %>
 			<%= text_field_tag :search, nil, placeholder: "Filter…", class: "input input--transparent txt-small margin-block-half", autofocus: true,

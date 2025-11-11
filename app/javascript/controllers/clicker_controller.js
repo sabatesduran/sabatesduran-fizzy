@@ -6,6 +6,10 @@ export default class extends Controller {
 
   async click() {
     await nextFrame()
-    this.clickableTarget.click()
+    this.#clickable.click()
+  }
+
+  get #clickable() {
+    return this.hasClickableTarget ? this.clickableTarget : this.element
   }
 }

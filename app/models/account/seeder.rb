@@ -50,7 +50,7 @@ class Account::Seeder
       HTML
 
       playground.cards.create! creator: creator, title: "Now,check out all cards assigned to you", status: "published", description: <<~HTML
-        <p>Pull down the Fizzy menu at the top of the screen, and select “<b><strong>Assigned to me</b></strong>” or just hit “3” on your keyboard any time.</p>
+        <p>Pull down the Fizzy menu at the top of the screen, and select “<b><strong>Assigned to me</b></strong>” or just hit “2” on your keyboard any time.</p>
         <p><br></p>
         <action-text-attachment url="https://videos.37signals.com/fizzy/assets/images/all-assigned.gif" alt="Demo of navigating to 'Assigned to Me'" caption="See all cards assigned to me" content-type="image/*" filename="all-assigned.gif" presentation="gallery"></action-text-attachment>
       HTML

@@ -7,8 +7,11 @@
       <% end %>
     </div>
   <% else %>
-    <%= button_to card_closure_path(card), class: "btn borderless" do %>
+    <%= button_to card_closure_path(card), class: "btn borderless",
+        data: { controller: "hotkey", form_target: "submit", action: "keydown.d@document->hotkey#click" },
+        form: { data: { controller: "form" } } do %>
       <span class="overflow-ellipsis">Mark as Done</span>
+      <kbd class="txt-x-small hide-on-touch">d</kbd>
     <% end %>
 
     <div id="<%= dom_id(card, :closure_notice) %>">

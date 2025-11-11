@@ -240,8 +240,9 @@
       translate: 0 calc(-1 * var(--half-btn-height));
     }
 
-    &:has([open]) {
-      z-index: 1;
+    form {
+      background-color: var(--color-canvas);
+      border-radius: 99rem;
     }
 
     .btn:not(.popup__btn, .btn--plain, .btn--reversed) {

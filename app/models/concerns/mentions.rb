@@ -19,20 +19,6 @@ module Mentions
 
   private
     def scan_mentionees
-      mentionees_from_plain_text | mentionees_from_rich_text
-    end
-
-    def mentionees_from_plain_text
-      scan_mentioned_handles.filter_map do |mention|
-        mentionable_users.find { |user| user.mentionable_handles.include?(mention) }
-      end
-    end
-
-    def scan_mentioned_handles
-      mentionable_content.scan(/(?<!\w)@(\w+)/).flatten.uniq(&:downcase)
-    end
-
-    def mentionees_from_rich_text
       mentionees_from_attachments & mentionable_users
     end
 
@@ -49,7 +35,7 @@ module Mentions
     end
 
     def should_create_mentions?
-      mentionable? && mentionable_content_changed?
+      mentionable? && (mentionable_content_changed? || should_check_mentions?)
     end
 
     def mentionable_content_changed?
@@ -63,5 +49,9 @@ module Mentions
     # Template method
     def mentionable?
       true
+    end
+
+    def should_check_mentions?
+      false
     end
 end

@@ -1,4 +1,7 @@
 @layer components {
+  /* Trigger
+  /* ------------------------------------------------------------------------ */
+
   .nav__trigger {
     --input-background: var(--color-canvas);
     --input-border-color: transparent;
@@ -46,20 +49,36 @@
     }
   }
 
+  /* Dialog
+  /* ------------------------------------------------------------------------ */
+
   .nav__menu.popup {
     --panel-border-color: var(--color-selected-dark);
     --panel-border-radius: 1.4em;
     --panel-padding: var(--block-space) var(--block-space) 0 var(--block-space);
     --panel-size: 45ch;
+    --popup-display: grid;
+    --nav-section-gap: 2px;
 
-    align-items: stretch;
+    block-size: auto;
     box-shadow: 0 0 0 1px oklch(var(--lch-blue-medium) / 5%),
                 0 0.2em 0.2em oklch(var(--lch-blue-medium) / 5%),
                 0 0.4em 0.4em oklch(var(--lch-blue-medium) / 5%),
                 0 0.8em 0.8em oklch(var(--lch-blue-medium) / 5%);
-    flex-direction: column;
-    gap: 2px;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--nav-section-gap);
+    overflow: hidden;
     scrollbar-gutter: stable both-edges;
+  }
+
+  .nav__scroll-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--nav-section-gap);
+    margin-inline: calc(-1 * var(--block-space)); /* space for scrollbar */
+    overflow: auto;
+    padding-block-end: var(--nav-section-gap);
+    padding-inline: var(--block-space);
   }
 
   .nav__close {
@@ -133,27 +152,14 @@
     }
   }
 
-  /* Safari doesn't position the sticky footer properly during the
-   * transition, so we need to delay the footer entrance. */
   .nav__footer {
-    animation: safari-sticky-footer-hack 0s;
-    animation-delay: var(--dialog-duration);
-    animation-fill-mode: both;
     background-color: var(--color-canvas);
     border-block-start: 1px solid var(--color-ink-lighter);
     font-size: var(--text-small);
-    inset: auto 0 0;
-    inset-inline: var(--block-space);
     line-height: 1.6;
-    margin-block-start: var(--block-space-half);
+    margin-block-start: calc(-1 * var(--nav-section-gap));
     padding: 1.5ch;
-    position: sticky;
     text-align: center;
     z-index: 1;
-  }
-
-  @keyframes safari-sticky-footer-hack {
-    0% { position: absolute; }
-    100% { position: sticky; }
   }
 }

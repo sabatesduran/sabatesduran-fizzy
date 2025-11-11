@@ -80,6 +80,10 @@ export default class extends Controller {
       selectedItem.setAttribute(this.selectionAttributeValue, "true")
       this.currentItem = selectedItem
       await nextFrame()
+      try {
+        this.currentItem.scrollIntoView({ block: "nearest", inline: "nearest" })
+      } catch (e) {}
+
       if (this.focusOnSelectionValue) { this.currentItem.focus() }
       if (this.hasInputTarget && id) {
         this.inputTarget.setAttribute("aria-activedescendant", id)
