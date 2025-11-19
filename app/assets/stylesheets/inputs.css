@@ -48,6 +48,13 @@
         margin: 0;
       }
     }
+
+    /* Target mobile Safari only */
+    @supports (hanging-punctuation: first) and (font: -apple-system-body) and (-webkit-appearance: none) {
+      @media (hover: none) {
+        font-size: max(16px, 1em) !important;
+      }
+    }
   }
 
   .input--file {
