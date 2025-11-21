@@ -21,9 +21,7 @@ module Search::Record::Trilogy
     end
 
     def matching_scope(query, account_id)
-      stemmed_query = Search::Stemmer.stem(query)
-      account_key = "account#{account_id}"
-      full_query = "+#{account_key} +(#{stemmed_query})"
+      full_query = "+account#{account_id} +(#{Search::Stemmer.stem(query)})"
       where("MATCH(#{table_name}.account_key, #{table_name}.content, #{table_name}.title) AGAINST(? IN BOOLEAN MODE)", full_query)
     end
 
