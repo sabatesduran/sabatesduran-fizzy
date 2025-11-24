@@ -1,32 +1,35 @@
 @layer base {
   body {
+    block-size: 100dvh;
     display: grid;
-    grid-template-rows: auto 1fr var(--footer-height);
-
-    @media (min-width: 640px) {
-      grid-template-rows: auto 1fr auto 9em;
-    }
+    grid-template-rows: 1fr var(--bar-height);
 
     &.public {
       grid-template-rows: auto 1fr auto;
     }
   }
 
+  :where(#header) {
+    position: relative;
+    z-index: var(--z-nav);
+  }
+
+  :where(#scroll-container) {
+    overflow: auto;
+  }
+
   :where(#main) {
     inline-size: 100dvw;
     margin-inline: auto;
     max-inline-size: 100dvw;
+    overflow: auto;
+    padding-block-end: 1.5rem;
     padding-inline: var(--main-padding);
     text-align: center;
-  }
 
-  :where(#footer) {
-    max-inline-size: 100dvw;
-  }
-
-  :where(#header) {
-    position: relative;
-    z-index: var(--z-nav);
+    @media (min-width: 800px) {
+      padding-block-end: 6rem; /* Room for cards in the tray */
+    }
   }
 
   :is(#header, #footer) {

@@ -3,17 +3,15 @@
     --row-gap: 0.2lh;
 
     background-color: var(--color-terminal-bg);
-    block-size: calc(var(--footer-height) + env(safe-area-inset-bottom));
+    block-size: calc(var(--bar-height) + env(safe-area-inset-bottom));
     color: var(--color-terminal-text);
     display: flex;
     flex-direction: column;
     font-size: 0.9em;
-    inset: auto 0 0 0;
     max-block-size: 100%;
     padding-block: var(--block-space) calc(var(--block-space) + env(safe-area-inset-bottom));
     padding-inline: calc(var(--tray-size) + calc(var(--inline-space) * 3));
     place-content: center;
-    position: fixed;
     view-transition-name: bar;
     z-index: var(--z-bar);
 
@@ -46,7 +44,7 @@
     inline-size: 100vw;
     inset: auto 0 0 0;
     max-inline-size: 100vw;
-    margin-block-end: calc(var(--footer-height) - 0.3rem);
+    margin-block-end: calc(var(--bar-height) - 0.3rem);
     position: fixed;
     z-index: -1;
 
