@@ -58,6 +58,7 @@
   .card-columns__right {
     align-items: stretch;
     display: flex;
+    overflow: none;
 
     @media (min-width: 640px) {
       gap: var(--column-gap);
