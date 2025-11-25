@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_21_112416) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_25_110629) do
   create_table "accesses", id: :uuid, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.datetime "accessed_at"
     t.uuid "account_id", null: false
@@ -378,7 +378,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_112416) do
     t.text "endpoint"
     t.string "p256dh_key"
     t.datetime "updated_at", null: false
-    t.string "user_agent"
+    t.string "user_agent", limit: 4096
     t.uuid "user_id", null: false
     t.index ["account_id"], name: "index_push_subscriptions_on_account_id"
     t.index ["user_id", "endpoint"], name: "index_push_subscriptions_on_user_id_and_endpoint", unique: true, length: { endpoint: 255 }
@@ -653,7 +653,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_21_112416) do
     t.uuid "identity_id", null: false
     t.string "ip_address"
     t.datetime "updated_at", null: false
-    t.string "user_agent"
+    t.string "user_agent", limit: 4096
     t.index ["identity_id"], name: "index_sessions_on_identity_id"
   end
 
