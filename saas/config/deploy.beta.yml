@@ -74,6 +74,7 @@ ssh:
 
 env:
   clear:
+    APP_FQDN: beta<%= @beta_number %>.fizzy-beta.com
     RAILS_ENV: beta
     MYSQL_DATABASE_HOST: fizzy-mysql-primary
     MYSQL_DATABASE_REPLICA_HOST: fizzy-mysql-replica
