@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   root "events#index"
+  post "mcp", to: "mcp#create", defaults: { format: :json }
 
   namespace :account do
     resource :entropy
