@@ -54,10 +54,18 @@ class ActionMcp::BaseController < ActionController::Base
       {}
     end
 
+    def tool_classes
+      ApplicationTool.descendants
+    end
+
     def tool_list
-      {}
+      { "tools": tool_classes.collect { it.new.tool_bundle } }
     end
 
     def tool_call(tool_name, tool_arguments)
+    end
+
+    def rpc_success(result:)
+      { jsonrpc: "2.0", id: rpc_id, result: result }
     end
 end
