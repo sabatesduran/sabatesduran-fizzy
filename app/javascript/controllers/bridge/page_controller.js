@@ -9,7 +9,6 @@ export default class extends BridgeComponent {
 
   async connect() {
     super.connect()
-    this.notifyBridgeOfPageChange()
     await nextFrame()
     this.startObserver()
     window.addEventListener("resize", this.windowResized)
@@ -31,19 +30,6 @@ export default class extends BridgeComponent {
 
   setTextSize(data) {
     document.documentElement.dataset.textSize = data.textSize
-  }
-
-  // Bridge
-
-  notifyBridgeOfPageChange() {
-    const data = { title: this.title }
-
-    if (this.hasHeaderTarget) {
-      // Assume header visible by default until we get IntersectionObserver update
-      data.elementVisible = true
-    }
-
-    this.send("change", data, message => this.receive(message))
   }
 
   notifyBridgeOfVisibilityChange(visible) {
