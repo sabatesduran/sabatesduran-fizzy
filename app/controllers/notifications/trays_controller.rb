@@ -9,7 +9,7 @@ class Notifications::TraysController < ApplicationController
 
     # Invalidate on the whole set instead of the unread set since the max updated at in the unread set
     # can stay the same when reading old notifications.
-    fresh_when Current.user.notifications
+    fresh_when etag: [ Current.user.notifications, include_unread? ]
   end
 
   private
