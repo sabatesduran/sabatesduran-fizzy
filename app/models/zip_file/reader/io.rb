@@ -1,4 +1,4 @@
-class ZipFile::Reader::ExtractorIO
+class ZipFile::Reader::IO
   def initialize(entry, io)
     @entry = entry
     @io = io

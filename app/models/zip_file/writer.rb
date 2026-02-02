@@ -10,7 +10,7 @@ class ZipFile::Writer
   end
 
   def io
-    @counting_io ||= CountingIO.new(self)
+    @io ||= ZipFile::Writer::IO.new(self)
   end
 
   def stream_to(io)
@@ -55,19 +55,4 @@ class ZipFile::Writer
     def streamer
       @streamer ||= ZipKit::Streamer.new(@output_io)
     end
-
-  class CountingIO
-    def initialize(writer)
-      @writer = writer
-    end
-
-    def write(data)
-      @writer.write(data)
-    end
-
-    def <<(data)
-      write(data)
-      self
-    end
-  end
 end
