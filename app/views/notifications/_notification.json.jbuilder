@@ -3,6 +3,7 @@ json.cache! notification do
   json.read notification.read?
   json.read_at notification.read_at&.utc
   json.created_at notification.created_at.utc
+  json.source_type notification.source_type.underscore
 
   json.partial! "notifications/notification/#{notification.source_type.underscore}/body", notification: notification
 
