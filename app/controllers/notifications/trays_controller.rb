@@ -3,13 +3,13 @@ class Notifications::TraysController < ApplicationController
 
   def show
     @notifications = unread_notifications
-    if include_unread?
+    if include_read?
       @notifications += read_notifications
     end
 
     # Invalidate on the whole set instead of the unread set since the max updated at in the unread set
     # can stay the same when reading old notifications.
-    fresh_when etag: [ Current.user.notifications, include_unread? ]
+    fresh_when etag: [ Current.user.notifications, include_read? ]
   end
 
   private
@@ -21,7 +21,7 @@ class Notifications::TraysController < ApplicationController
       Current.user.notifications.preloaded.read.ordered.limit(MAX_ENTRIES_LIMIT)
     end
 
-    def include_unread?
-      ActiveModel::Type::Boolean.new.cast(params[:include_unread])
+    def include_read?
+      ActiveModel::Type::Boolean.new.cast(params[:include_read])
     end
 end

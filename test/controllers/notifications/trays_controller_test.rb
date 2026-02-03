@@ -21,12 +21,12 @@ class Notifications::TraysControllerTest < ActionDispatch::IntegrationTest
     assert_equal expected_ids, @response.parsed_body.map { |notification| notification["id"] }
   end
 
-  test "show as JSON with include_unread includes read notifications" do
+  test "show as JSON with include_read includes read notifications" do
     notifications = users(:kevin).notifications
     expected_ids = notifications.unread.ordered.limit(100).pluck(:id) +
       notifications.read.ordered.limit(100).pluck(:id)
 
-    get tray_notifications_path(format: :json, include_unread: true)
+    get tray_notifications_path(format: :json, include_read: true)
 
     assert_response :success
     assert_equal expected_ids, @response.parsed_body.map { |notification| notification["id"] }
