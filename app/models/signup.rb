@@ -3,12 +3,15 @@ class Signup
   include ActiveModel::Attributes
   include ActiveModel::Validations
 
-  attr_accessor :full_name, :email_address, :identity, :skip_account_seeding
+  attr_accessor :full_name, :email_address, :password, :password_confirmation, :identity, :skip_account_seeding
   attr_reader :account, :user
 
   validates :email_address, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :identity_creation
   validates :full_name, :identity, presence: true, on: :completion
   validates :full_name, length: { maximum: 240 }
+
+  validates :password, confirmation: true, allow_blank: true, on: :completion
+  validates :password, length: { minimum: 8 }, allow_blank: true, on: :completion
 
   def initialize(...)
     super
@@ -24,6 +27,7 @@ class Signup
   def complete
     if valid?(:completion)
       begin
+        set_password_if_provided!
         @tenant = create_tenant
         create_account
         true
@@ -44,6 +48,14 @@ class Signup
   end
 
   private
+    def set_password_if_provided!
+      return if password.blank?
+
+      identity.password = password
+      identity.password_confirmation = password_confirmation
+      identity.save!
+    end
+
     # Override to customize the handling of external accounts associated to the account.
     def create_tenant
       nil

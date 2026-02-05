@@ -19,7 +19,7 @@ class Signups::CompletionsController < ApplicationController
 
   private
     def signup_params
-      params.expect(signup: %i[ full_name ]).with_defaults(identity: Current.identity)
+      params.expect(signup: %i[ full_name password password_confirmation ]).with_defaults(identity: Current.identity)
     end
 
     def welcome_to_account

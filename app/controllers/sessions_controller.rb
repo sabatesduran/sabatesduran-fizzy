@@ -9,12 +9,10 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if identity = Identity.find_by(email_address: email_address)
-      sign_in identity
-    elsif Account.accepting_signups?
-      sign_up
+    if password.present?
+      sign_in_with_password
     else
-      redirect_to_fake_session_magic_link email_address
+      sign_in_with_magic_link
     end
   end
 
@@ -41,6 +39,10 @@ class SessionsController < ApplicationController
       params.expect(:email_address)
     end
 
+    def password
+      params[:password].presence
+    end
+
     def rate_limit_exceeded
       rate_limit_exceeded_message = "Try again later."
 
@@ -50,8 +52,32 @@ class SessionsController < ApplicationController
       end
     end
 
-    def sign_in(identity)
-      redirect_to_session_magic_link identity.send_magic_link
+    def sign_in_with_magic_link
+      if identity = Identity.find_by(email_address: email_address)
+        redirect_to_session_magic_link identity.send_magic_link
+      elsif Account.accepting_signups?
+        sign_up
+      else
+        redirect_to_fake_session_magic_link email_address
+      end
+    end
+
+    def sign_in_with_password
+      identity = Identity.find_by(email_address: email_address)
+
+      if identity&.authenticate(password)
+        start_new_session_for identity
+
+        respond_to do |format|
+          format.html { redirect_to after_authentication_url }
+          format.json { render json: { session_token: session_token }, status: :created }
+        end
+      else
+        respond_to do |format|
+          format.html { redirect_to new_session_path, alert: "Invalid email or password" }
+          format.json { render json: { message: "Invalid email or password" }, status: :unauthorized }
+        end
+      end
     end
 
     def sign_up
