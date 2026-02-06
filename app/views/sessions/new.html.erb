@@ -18,6 +18,10 @@
       </div>
 
       <p>Enter your email and password to sign in.</p>
+
+      <% if Account.accepting_signups? %>
+        <p><strong>New here?</strong> <%= link_to "Sign up", new_signup_path %> to create an account.</p>
+      <% end %>
     <% else %>
       <div class="flex align-center gap">
         <label class="flex align-center gap input input--actor">
