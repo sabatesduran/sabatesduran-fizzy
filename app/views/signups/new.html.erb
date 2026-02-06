@@ -10,7 +10,16 @@
       </label>
     </div>
 
-    <p>Enter your email to create an account.</p>
+    <% if ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false)) %>
+      <div class="flex flex-column gap-half">
+        <%= form.password_field :password, required: true, class: "input txt-large", autocomplete: "new-password", placeholder: "Set a password…" %>
+        <%= form.password_field :password_confirmation, required: true, class: "input txt-large", autocomplete: "new-password", placeholder: "Confirm password…" %>
+      </div>
+
+      <p>Enter your email and set a password to create an account.</p>
+    <% else %>
+      <p>Enter your email to create an account.</p>
+    <% end %>
 
     <button type="submit" id="log_in" class="btn btn--link center txt-medium">
       <span>Let’s go</span>

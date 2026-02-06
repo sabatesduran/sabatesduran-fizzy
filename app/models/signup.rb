@@ -10,9 +10,11 @@ class Signup
   validates :full_name, :identity, presence: true, on: :completion
   validates :full_name, length: { maximum: 240 }
 
-  validates :password, confirmation: true, allow_blank: true, on: :completion
-  validates :password, length: { minimum: 8 }, allow_blank: true, on: :completion
-  validates :password, presence: true, if: :password_login_enabled?, on: :completion
+  validates :password, confirmation: true, allow_blank: true
+  validates :password, length: { minimum: 8 }, allow_blank: true
+
+  validates :password, presence: true, if: :password_required_for_password_login?, on: :identity_creation
+  validates :password, presence: true, if: :password_required_for_password_login?, on: :completion
 
   def initialize(...)
     super
@@ -51,6 +53,10 @@ class Signup
   private
     def password_login_enabled?
       ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false))
+    end
+
+    def password_required_for_password_login?
+      password_login_enabled? && identity&.password_digest.blank?
     end
 
     def set_password_if_provided!
