@@ -6,7 +6,19 @@
   <%= form_with model: @signup, url: signup_completion_path, scope: "signup", class: "flex flex-column gap", data: { controller: "form" } do |form| %>
     <%= form.text_field :full_name, class: "input txt-large", autocomplete: "name", placeholder: "Enter your full name…", autofocus: true, required: true, maxlength: 240 %>
 
-    <p>You're one step away. Just enter your name to get your own Fizzy account.</p>
+    <p>You're one step away. Enter your name to finish setting up your account.</p>
+
+    <div class="flex flex-column gap-half">
+      <% if ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false)) %>
+        <%= form.password_field :password, class: "input txt-large", autocomplete: "new-password", placeholder: "Set a password…", required: true %>
+        <%= form.password_field :password_confirmation, class: "input txt-large", autocomplete: "new-password", placeholder: "Confirm password…", required: true %>
+        <p class="txt-small">Password login is enabled for this instance.</p>
+      <% else %>
+        <%= form.password_field :password, class: "input txt-large", autocomplete: "new-password", placeholder: "Set a password (optional)…" %>
+        <%= form.password_field :password_confirmation, class: "input txt-large", autocomplete: "new-password", placeholder: "Confirm password…" %>
+        <p class="txt-small">Optional: If you set a password, you can sign in with email + password. Otherwise, you can keep using email codes.</p>
+      <% end %>
+    </div>
 
     <% if @signup.errors.any? %>
       <div class="margin-block-half txt-negative txt-small" style="text-align: left;">

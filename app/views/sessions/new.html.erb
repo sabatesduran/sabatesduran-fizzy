@@ -10,10 +10,26 @@
       </label>
     </div>
 
-    <% if Account.accepting_signups? %>
-      <p><strong>New here?</strong> <%= link_to "Sign up", new_signup_path %> to create an account. <strong>Already have an account?</strong> Enter your email and we’ll get you signed in.</p>
+    <% if ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false)) %>
+      <div class="flex align-center gap">
+        <label class="flex align-center gap input input--actor">
+          <%= form.password_field :password, required: true, class: "input txt-large full-width", autocomplete: "current-password", placeholder: "Password…" %>
+        </label>
+      </div>
+
+      <p>Enter your email and password to sign in.</p>
     <% else %>
-      <p>Enter your email and we’ll get you signed in.</p>
+      <div class="flex align-center gap">
+        <label class="flex align-center gap input input--actor">
+          <%= form.password_field :password, required: false, class: "input txt-large full-width", autocomplete: "current-password", placeholder: "Password (optional)…" %>
+        </label>
+      </div>
+
+      <% if Account.accepting_signups? %>
+        <p><strong>New here?</strong> <%= link_to "Sign up", new_signup_path %> to create an account. <strong>Already have an account?</strong> Enter your email and we’ll get you signed in.</p>
+      <% else %>
+        <p>Enter your email and we’ll get you signed in.</p>
+      <% end %>
     <% end %>
 
     <button type="submit" id="log_in" class="btn btn--link center txt-medium">
