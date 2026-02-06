@@ -9,7 +9,9 @@ class SessionsController < ApplicationController
   end
 
   def create
-    if password.present?
+    if password_login_enabled?
+      sign_in_with_password
+    elsif password.present?
       sign_in_with_password
     else
       sign_in_with_magic_link
@@ -43,6 +45,10 @@ class SessionsController < ApplicationController
       params[:password].presence
     end
 
+    def password_login_enabled?
+      ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false))
+    end
+
     def rate_limit_exceeded
       rate_limit_exceeded_message = "Try again later."
 
@@ -63,6 +69,14 @@ class SessionsController < ApplicationController
     end
 
     def sign_in_with_password
+      if password_login_enabled? && password.blank?
+        respond_to do |format|
+          format.html { redirect_to new_session_path, alert: "Password is required" }
+          format.json { render json: { message: "Password is required" }, status: :unprocessable_entity }
+        end
+        return
+      end
+
       identity = Identity.find_by(email_address: email_address)
 
       if identity&.authenticate(password)
@@ -74,8 +88,14 @@ class SessionsController < ApplicationController
         end
       else
         respond_to do |format|
-          format.html { redirect_to new_session_path, alert: "Invalid email or password" }
-          format.json { render json: { message: "Invalid email or password" }, status: :unauthorized }
+          if password_login_enabled?
+            format.html { redirect_to new_session_path, alert: "Invalid email or password" }
+            format.json { render json: { message: "Invalid email or password" }, status: :unauthorized }
+          else
+            # When password login is optional, treat missing/invalid passwords like a normal failure.
+            format.html { redirect_to new_session_path, alert: "Invalid email or password" }
+            format.json { render json: { message: "Invalid email or password" }, status: :unauthorized }
+          end
         end
       end
     end

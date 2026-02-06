@@ -9,9 +9,15 @@
     <p>You're one step away. Enter your name to finish setting up your account.</p>
 
     <div class="flex flex-column gap-half">
-      <%= form.password_field :password, class: "input txt-large", autocomplete: "new-password", placeholder: "Set a password (optional)…" %>
-      <%= form.password_field :password_confirmation, class: "input txt-large", autocomplete: "new-password", placeholder: "Confirm password…" %>
-      <p class="txt-small">Optional: If you set a password, you can sign in with email + password. Otherwise, you can keep using email codes.</p>
+      <% if ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false)) %>
+        <%= form.password_field :password, class: "input txt-large", autocomplete: "new-password", placeholder: "Set a password…", required: true %>
+        <%= form.password_field :password_confirmation, class: "input txt-large", autocomplete: "new-password", placeholder: "Confirm password…", required: true %>
+        <p class="txt-small">Password login is enabled for this instance.</p>
+      <% else %>
+        <%= form.password_field :password, class: "input txt-large", autocomplete: "new-password", placeholder: "Set a password (optional)…" %>
+        <%= form.password_field :password_confirmation, class: "input txt-large", autocomplete: "new-password", placeholder: "Confirm password…" %>
+        <p class="txt-small">Optional: If you set a password, you can sign in with email + password. Otherwise, you can keep using email codes.</p>
+      <% end %>
     </div>
 
     <% if @signup.errors.any? %>

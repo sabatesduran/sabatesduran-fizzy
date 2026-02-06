@@ -12,6 +12,7 @@ class Signup
 
   validates :password, confirmation: true, allow_blank: true, on: :completion
   validates :password, length: { minimum: 8 }, allow_blank: true, on: :completion
+  validates :password, presence: true, if: :password_login_enabled?, on: :completion
 
   def initialize(...)
     super
@@ -48,6 +49,10 @@ class Signup
   end
 
   private
+    def password_login_enabled?
+      ActiveModel::Type::Boolean.new.cast(ENV.fetch("PASSWORD_LOGIN_ENABLED", false))
+    end
+
     def set_password_if_provided!
       return if password.blank?
 
